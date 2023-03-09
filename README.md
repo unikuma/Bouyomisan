@@ -1,4 +1,16 @@
-# Bouyomisan
+# 棒読みさん
+
+## 導入方法
+
+下記リンクから棒読みさんとAquesTalkPlayerをダウンロードし、zipファイルを適当な場所に解凍します。
+
+Bouyomisan：https://github.com/unikuma/Bouyomisan/releases
+
+AquesTalkPlayer：https://www.a-quest.com/products/aquestalkplayer.html
+
+次に解凍したBouyomisanフォルダ内のAquesTalkPlayerフォルダに、AquesTalkPlayerの中身(AquesTalkPlayer.exe等々)を全てコピーします。
+
+これにて導入は完了です。
 
 ## 音声合成(旧:一般) ドキュメント
 
@@ -15,6 +27,10 @@ AviUtl上の字幕になります。この文字列は読み上げられませ�
 また、接頭辞「#>」を付与する事で音声記号列を読み上げることが出来ます(AquesTalkPlayerの仕様)。
 
 なお選択中の声設定の「棒読み化」が有効だと、音声記号列として読み上げません。
+
+例:「#>ユック'リ/_シテイッテ'ネ」
+
+![スクリーンショット 2023-03-09 191620](https://user-images.githubusercontent.com/85827428/223992318-5b6c730b-f5d9-4114-9017-730e53b1c1c9.png)
 
 ### 字幕をコピー
 
@@ -60,4 +76,22 @@ v2.0.0より補正フレーム数から補正ミリ秒に変更しました。(�
 
 音声記号列として読み上げたい場合はこの設定を無効にしてください。
 
+### Exoテンプレート
 
+ゆくサクのExoテンプレートと同じです。
+
+## 出力設定 ドキュメント
+
+### 名前
+
+出力設定の名前です。こちらは重複可能です。
+
+### 音声出力先
+
+wav・exoファイルの出力先です。デフォルトではBouyomisan.exeと同フォルダのAudioOutフォルダに設定されています。
+
+### AviUtlのFPS
+
+AviUtl上で設定されている動画のFPSです。
+
+棒読みさんで音声を作った時のFPSとAviUtlでのFPSが一致していないと、AviUtl上で音声が途中で途切れたり、音声の長さが長すぎるなど意図していない動作をする可能性があります。
