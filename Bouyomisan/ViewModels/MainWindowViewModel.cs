@@ -299,5 +299,7 @@ namespace Bouyomisan.ViewModels
 
             VoiceText = temp;
         }
+
+        private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
     }
 }
