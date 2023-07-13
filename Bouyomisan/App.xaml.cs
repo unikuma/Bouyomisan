@@ -1,32 +1,38 @@
-﻿using Livet;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using System;
+using System.IO;
 using System.Windows;
+using Livet;
 
 namespace Bouyomisan
 {
-	public partial class App : Application
-	{
-		private void Application_Startup(object sender, StartupEventArgs e)
-		{
-			DispatcherHelper.UIDispatcher = Dispatcher;
-			//AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-		}
+    public partial class App : Application
+    {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            DispatcherHelper.UIDispatcher = Dispatcher;
+            AppDomain.CurrentDomain.UnhandledException += CatchUnhandledException;
+        }
 
-		// Application level error handling
-		//private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		//{
-		//    //TODO: Logging
-		//    MessageBox.Show(
-		//        "Something errors were occurred.",
-		//        "Error",
-		//        MessageBoxButton.OK,
-		//        MessageBoxImage.Error);
-		//
-		//    Environment.Exit(1);
-		//}
-	}
+        private void CatchUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                var exception = (Exception)e.ExceptionObject;
+
+                MessageBox.Show(
+                    $"ハンドルされていない例外が発生しました。" + Environment.NewLine + exception.Message,
+                    "Bouyomisan エラー",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                File.AppendAllText(
+                    "./Bouyomisan.log",
+                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "\t" + exception.Message + Environment.NewLine);
+            }
+            finally
+            {
+                Environment.Exit(1);
+            }
+        }
+    }
 }
