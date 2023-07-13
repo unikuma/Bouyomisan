@@ -1,5 +1,6 @@
 ﻿using Bouyomisan.Models;
 using Livet;
+using Livet.EventListeners;
 using Livet.Messaging;
 using System;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Windows;
 
 namespace Bouyomisan.ViewModels
 {
-    public class MainWindowViewModel : ViewModel, IDisposable
+    public class MainWindowViewModel : ViewModel
     {
         #region VoiceSettingsプロパティ
         /// <summary>
@@ -79,18 +80,11 @@ namespace Bouyomisan.ViewModels
         private ObservableCollection<WordPair> _wordDictionary = new();
         #endregion
 
-        #region ShouldWavOnlyOutputプロパティ
-        /// <summary>
-        /// Wavファイルのみ出力するべきか否か
-        /// </summary>
-        public bool ShouldWavOnlyOutput
+        public bool ShouldOutputWavOnly
         {
-            get => _shouldWavOnlyOutput;
-            set => RaisePropertyChangedIfSet(ref _shouldWavOnlyOutput, value);
+            get => _engine.ShouldOutputWavOnly;
+            set => _engine.ShouldOutputWavOnly = value;
         }
-
-        private bool _shouldWavOnlyOutput = false;
-        #endregion
 
         /// <summary>
         /// 棒読みさんのバージョン
@@ -105,6 +99,29 @@ namespace Bouyomisan.ViewModels
         {
             // ファイル読み書きなどでsjisを使えるようにする。
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            CompositeDisposable.Add(
+                new PropertyChangedEventListener(_engine, (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_engine.Subtitles):
+                        RaisePropertyChanged(nameof(Subtitles));
+                        break;
+
+                    case nameof(_engine.Pronunciation):
+                        RaisePropertyChanged(nameof(Pronunciation));
+                        break;
+
+                    case nameof(_engine.ShouldCopySubtitles):
+                        RaisePropertyChanged(nameof(ShouldCopySubtitles));
+                        break;
+
+                    case nameof(_engine.ShouldOutputWavOnly):
+                        RaisePropertyChanged(nameof(ShouldOutputWavOnly));
+                        break;
+                }
+            }));
 
             if (!File.Exists("Settings.xml"))
             {
@@ -128,45 +145,22 @@ namespace Bouyomisan.ViewModels
             SelectedOutput = _appSettings.SelectedIndex.output;
         }
 
-        #region SubtitleTextプロパティ
-        /// <summary>
-        /// AviUtl上での字幕になる文字列
-        /// </summary>
-        public string SubtitleText
+        public string Subtitles
         {
-            get => _subtitleText;
-            set
-            {
-                if (ShouldCopyText)
-                    ApplyDictionary(value);
-
-                RaisePropertyChangedIfSet(ref _subtitleText, value);
-
-                if (value == string.Empty)
-                    ShouldCopyText = true;
-            }
+            get => _engine.Subtitles;
+            set => _engine.Subtitles = value;
         }
 
-        private string _subtitleText = string.Empty;
-        #endregion
-
-        #region VoiceTextプロパティ
-        /// <summary>
-        /// AquesTalkPlayerを通して読み上げる文字列
-        /// </summary>
-        public string VoiceText
+        public string Pronunciation
         {
-            get => _voiceText;
-            set => RaisePropertyChangedIfSet(ref _voiceText, value);
+            get => _engine.Pronunciation;
+            set => _engine.Pronunciation = value;
         }
-
-        private string _voiceText = string.Empty;
-        #endregion
 
         // 読み上げ用文字列をAquesTalkPlayerで再生する
         public void PlayVoiceText()
         {
-            if (string.IsNullOrWhiteSpace(VoiceText))
+            if (string.IsNullOrWhiteSpace(Pronunciation))
             {
                 MessageBox.Show("読み上げる文字列が無い為、音声を再生できません",
                                 "Bouyomisan",
@@ -188,13 +182,13 @@ namespace Bouyomisan.ViewModels
             PresetCreator.CreateIni(_appSettings);
 
             Process.Start(NewVoiceCreator.AquesTalkPlayerPath,
-                          $"/T \"{VoiceText.Replace("\r\n", string.Empty)}\" " +
+                          $"/T \"{Pronunciation.Replace("\r\n", string.Empty)}\" " +
                           $"/P \"{VoiceSettings[SelectedVoice].Name}\"");
         }
 
         public async void CreateExoFile(DependencyObject dragSource)
         {
-            if (string.IsNullOrWhiteSpace(VoiceText))
+            if (string.IsNullOrWhiteSpace(Pronunciation))
             {
                 MessageBox.Show("読み上げる文字列が無い為、音声ファイルを作成できません",
                                 "Bouyomisan",
@@ -221,8 +215,8 @@ namespace Bouyomisan.ViewModels
                 PresetCreator.CreateIni(_appSettings);
 
                 // 現在の設定を基に音声ファイルとExoファイルを作成する
-                nvc.SubtitleText = SubtitleText;
-                nvc.VoiceText = VoiceText;
+                nvc.SubtitleText = Subtitles;
+                nvc.VoiceText = Pronunciation;
                 nvc.SelectedVoice = VoiceSettings[SelectedVoice];
                 nvc.SelectedOutput = OutputSettings[SelectedOutput];
                 string wavPath = await nvc.CreateWavAsync();
@@ -231,7 +225,7 @@ namespace Bouyomisan.ViewModels
                     nvc.CreateTxt();
 
                 DragDrop.DoDragDrop(dragSource,
-                                    new DataObject(DataFormats.FileDrop, new string[] { ShouldWavOnlyOutput ? wavPath : nvc.CreateExo() }),
+                                    new DataObject(DataFormats.FileDrop, new string[] { ShouldOutputWavOnly ? wavPath : nvc.CreateExo() }),
                                     DragDropEffects.Copy);
             }
             catch (TimeoutException e)
@@ -240,27 +234,15 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        #region ShouldCopyTextプロパティ
-        /// <summary>
-        /// 字幕用文字列を読み上げ用文字列にコピーするべきか否か
-        /// </summary>
-        public bool ShouldCopyText
+        public bool ShouldCopySubtitles
         {
-            get => _shouldCopyText;
-            set
-            {
-                if (value)
-                    ApplyDictionary(SubtitleText);
-                RaisePropertyChangedIfSet(ref _shouldCopyText, value);
-            }
+            get => _engine.ShouldCopySubtitles;
+            set => _engine.ShouldCopySubtitles = value;
         }
-
-        private bool _shouldCopyText = true;
-        #endregion
 
         public void DisableCopy()
         {
-            ShouldCopyText = false;
+            ShouldCopySubtitles = false;
         }
 
         // 設定ウィンドウを開く
@@ -279,14 +261,23 @@ namespace Bouyomisan.ViewModels
         }
 
         // ウィンドウが閉じた
-        public new void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _appSettings.Voices = VoiceSettings;
-            _appSettings.Outputs = OutputSettings;
-            _appSettings.WordDictionary = WordDictionary;
-            _appSettings.SelectedIndex = (SelectedVoice, SelectedOutput);
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _appSettings.Voices = VoiceSettings;
+                    _appSettings.Outputs = OutputSettings;
+                    _appSettings.WordDictionary = WordDictionary;
+                    _appSettings.SelectedIndex = (SelectedVoice, SelectedOutput);
 
-            // Expansion.StaticXmlSerializer.Serialize("Settings.xml", _appSettings);
+                    // Expansion.StaticXmlSerializer.Serialize("Settings.xml", _appSettings);
+                }
+
+                _disposed = true;
+                base.Dispose(disposing);
+            }
         }
 
         // 読み上げ用文字列に辞書を適用
@@ -297,7 +288,10 @@ namespace Bouyomisan.ViewModels
             foreach (var data in WordDictionary)
                 temp = data.IsEnable ? Regex.Replace(temp, data.Before, data.After, RegexOptions.IgnoreCase) : temp;
 
-            VoiceText = temp;
+            Pronunciation = temp;
         }
+
+        private bool _disposed = false;
+        private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
     }
 }
