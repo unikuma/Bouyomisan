@@ -14,6 +14,11 @@ namespace Bouyomisan.Models
             get => _instance;
         }
 
+        public ApplicationSetting AppSetting
+        {
+            get => _appSetting;
+        }
+
         public string Subtitles
         {
             get => _subtitles;
@@ -70,9 +75,24 @@ namespace Bouyomisan.Models
             }
         }
 
-        private BouyomisanEngine() { }
+        private BouyomisanEngine()
+        {
+            var temp = ApplicationSetting.Deserialize();
+
+            if (temp == null)
+            {
+                temp = new()
+                {
+                    Voices = { new() { Name = "プログラムより追加" } },
+                    Outputs = { new() { Name = "プログラムより追加" } }
+                };
+            }
+
+            _appSetting = temp;
+        }
 
         private static readonly BouyomisanEngine _instance = new();
+        private readonly ApplicationSetting _appSetting;
         private bool _disposed = false;
         private string _subtitles = string.Empty;
         private string _pronunciation = string.Empty;
