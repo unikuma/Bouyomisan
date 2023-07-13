@@ -7,13 +7,13 @@ namespace Bouyomisan.ViewModels
 {
     public class SettingWindowViewModel : ViewModel
     {
-        private ApplicationSettings _appSetting = new();
+        private ApplicationSetting _appSetting = new();
 
         public SettingWindowViewModel()
         {
         }
 
-        public SettingWindowViewModel(ApplicationSettings appSetting)
+        public SettingWindowViewModel(ApplicationSetting appSetting)
         {
             _appSetting = appSetting;
             IsEnabledTxtOutput = _appSetting.IsEnabledTxtOutput;
