@@ -103,8 +103,6 @@ namespace Bouyomisan.ViewModels
 
         public void Initialize()
         {
-            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionManager;
-
             // ファイル読み書きなどでsjisを使えるようにする。
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -300,25 +298,6 @@ namespace Bouyomisan.ViewModels
                 temp = data.IsEnable ? Regex.Replace(temp, data.Before, data.After, RegexOptions.IgnoreCase) : temp;
 
             VoiceText = temp;
-        }
-
-        // ハンドルされていない例外を処理
-        private void UnhandledExceptionManager(object sender, UnhandledExceptionEventArgs e)
-        {
-            try
-            {
-                var exception = ((Exception)e.ExceptionObject).GetBaseException();
-                File.AppendAllText("Exception.log", $"{DateTime.Now} : {exception}\r\n");
-
-                MessageBox.Show($"ハンドルされていない例外が発生しました\r\n" +
-                                $"{exception.Message}\r\n" +
-                                $"Exception.logに情報を追記しました、異常終了します",
-                                "Bouyomisan UnhandledExceptionManager", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                Environment.Exit(1);
-            }
         }
     }
 }
