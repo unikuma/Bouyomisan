@@ -52,11 +52,11 @@ namespace Bouyomisan.ViewModels
                             break;
 
                         case nameof(_engine.AppSetting.SelectedVoiceIndex):
-                            RaisePropertyChanged(nameof(SelectedVoice));
+                            RaisePropertyChanged(nameof(SelectedVoiceIndex));
                             break;
 
                         case nameof(_engine.AppSetting.SelectedOutputIndex):
-                            RaisePropertyChanged(nameof(SelectedOutput));
+                            RaisePropertyChanged(nameof(SelectedOutputIndex));
                             break;
                     }
                 }));
@@ -99,7 +99,7 @@ namespace Bouyomisan.ViewModels
 
             Process.Start(NewVoiceCreator.AquesTalkPlayerPath,
                           $"/T \"{Pronunciation.Replace("\r\n", string.Empty)}\" " +
-                          $"/P \"{VoiceSettings[SelectedVoice].Name}\"");
+                          $"/P \"{VoiceSettings[SelectedVoiceIndex].Name}\"");
         }
 
         public async void CreateExoFile(DependencyObject dragSource)
@@ -123,8 +123,8 @@ namespace Bouyomisan.ViewModels
 
             try
             {
-                if (!Directory.Exists(Path.GetFullPath(OutputSettings[SelectedOutput].AudioOut)))
-                    Directory.CreateDirectory(Path.GetFullPath(OutputSettings[SelectedOutput].AudioOut));
+                if (!Directory.Exists(Path.GetFullPath(OutputSettings[SelectedOutputIndex].AudioOut)))
+                    Directory.CreateDirectory(Path.GetFullPath(OutputSettings[SelectedOutputIndex].AudioOut));
 
                 // 声設定を基に.presetファイルを作成する
                 PresetCreator.Create(VoiceSettings);
@@ -132,8 +132,8 @@ namespace Bouyomisan.ViewModels
                 // 現在の設定を基に音声ファイルとExoファイルを作成する
                 nvc.SubtitleText = Subtitles;
                 nvc.VoiceText = Pronunciation;
-                nvc.SelectedVoice = VoiceSettings[SelectedVoice];
-                nvc.SelectedOutput = OutputSettings[SelectedOutput];
+                nvc.SelectedVoice = VoiceSettings[SelectedVoiceIndex];
+                nvc.SelectedOutput = OutputSettings[SelectedOutputIndex];
                 string wavPath = await nvc.CreateWavAsync();
 
                 DragDrop.DoDragDrop(dragSource,
@@ -178,13 +178,13 @@ namespace Bouyomisan.ViewModels
             set => _engine.AppSetting.Outputs = value;
         }
 
-        public int SelectedVoice
+        public int SelectedVoiceIndex
         {
             get => _engine.AppSetting.SelectedVoiceIndex;
             set => _engine.AppSetting.SelectedVoiceIndex = value;
         }
 
-        public int SelectedOutput
+        public int SelectedOutputIndex
         {
             get => _engine.AppSetting.SelectedOutputIndex;
             set => _engine.AppSetting.SelectedOutputIndex = value;

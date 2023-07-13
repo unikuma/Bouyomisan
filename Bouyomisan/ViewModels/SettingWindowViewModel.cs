@@ -24,11 +24,11 @@ namespace Bouyomisan.ViewModels
                         break;
 
                     case nameof(_engine.AppSetting.SelectedVoiceIndex):
-                        RaisePropertyChanged(nameof(SelectedVoice));
+                        RaisePropertyChanged(nameof(SelectedVoiceIndex));
                         break;
 
                     case nameof(_engine.AppSetting.SelectedOutputIndex):
-                        RaisePropertyChanged(nameof(SelectedOutput));
+                        RaisePropertyChanged(nameof(SelectedOutputIndex));
                         break;
                 }
             }));
@@ -50,7 +50,7 @@ namespace Bouyomisan.ViewModels
             {
                 int index = VoiceSettings.IndexOf(voice);
 
-                if (SelectedVoice == index)
+                if (SelectedVoiceIndex == index)
                     MessageBox.Show("現在選択中の声設定を削除する事はできません", "Bouyomisan", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                     VoiceSettings.RemoveAt(index);
@@ -73,7 +73,7 @@ namespace Bouyomisan.ViewModels
             {
                 int index = OutputSettings.IndexOf(output);
 
-                if (SelectedOutput == index)
+                if (SelectedOutputIndex == index)
                     MessageBox.Show("現在選択中の出力設定を削除する事はできません", "Bouyomisan", MessageBoxButton.OK, MessageBoxImage.Error);
                 else
                     OutputSettings.RemoveAt(index);
@@ -124,13 +124,13 @@ namespace Bouyomisan.ViewModels
             set => _engine.AppSetting.Words = value;
         }
 
-        public int SelectedVoice
+        public int SelectedVoiceIndex
         {
             get => _engine.AppSetting.SelectedVoiceIndex;
             set => _engine.AppSetting.SelectedVoiceIndex = value;
         }
 
-        public int SelectedOutput
+        public int SelectedOutputIndex
         {
             get => _engine.AppSetting.SelectedOutputIndex;
             set => _engine.AppSetting.SelectedOutputIndex = value;

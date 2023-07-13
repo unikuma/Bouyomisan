@@ -165,7 +165,7 @@
     
         <ComboBox
             ItemsSource="{Binding VoiceSettings}"
-            SelectedIndex="{Binding SelectedVoice}"
+            SelectedIndex="{Binding SelectedVoiceIndex}"
             DisplayMemberPath="Name"
             Grid.Row="6"
             Grid.ColumnSpan="2"/>
@@ -179,7 +179,7 @@
     
         <ComboBox
             ItemsSource="{Binding OutputSettings}"
-            SelectedIndex="{Binding SelectedOutput}"
+            SelectedIndex="{Binding SelectedOutputIndex}"
             DisplayMemberPath="Name"
             Grid.Row="7"
             Grid.Column="1"/>
