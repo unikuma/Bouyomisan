@@ -146,7 +146,9 @@ namespace Bouyomisan.ViewModels
             }
         }
 
+        #pragma warning disable CA1822
         public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+        #pragma warning restore CA1822
 
         public string Subtitles
         {

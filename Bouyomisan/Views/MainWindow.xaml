@@ -5,7 +5,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:vm="clr-namespace:Bouyomisan.ViewModels"
-    Title="{Binding Version, StringFormat=棒読みさん {0}}"
+    Title="{Binding Version, StringFormat=Bouyomisan {0}}"
     Width="300"
     Height="425"
     Icon="../Resources/Bouyomisan.png"
