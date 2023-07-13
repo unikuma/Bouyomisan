@@ -140,9 +140,7 @@ namespace Bouyomisan.ViewModels
 
             VoiceSettings = _appSettings.Voices;
             OutputSettings = _appSettings.Outputs;
-            WordDictionary = _appSettings.WordDictionary;
-            SelectedVoice = _appSettings.SelectedIndex.voice;
-            SelectedOutput = _appSettings.SelectedIndex.output;
+            WordDictionary = _appSettings.Words;
         }
 
         public string Subtitles
@@ -269,8 +267,7 @@ namespace Bouyomisan.ViewModels
                 {
                     _appSettings.Voices = VoiceSettings;
                     _appSettings.Outputs = OutputSettings;
-                    _appSettings.WordDictionary = WordDictionary;
-                    _appSettings.SelectedIndex = (SelectedVoice, SelectedOutput);
+                    _appSettings.Words = WordDictionary;
 
                     // Expansion.StaticXmlSerializer.Serialize("Settings.xml", _appSettings);
                 }
