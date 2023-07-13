@@ -1,5 +1,6 @@
 ﻿using Bouyomisan.Models;
 using Livet;
+using Livet.EventListeners;
 using Livet.Messaging;
 using System;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Windows;
 
 namespace Bouyomisan.ViewModels
 {
-    public class MainWindowViewModel : ViewModel, IDisposable
+    public class MainWindowViewModel : ViewModel
     {
         #region VoiceSettingsプロパティ
         /// <summary>
@@ -105,6 +106,25 @@ namespace Bouyomisan.ViewModels
         {
             // ファイル読み書きなどでsjisを使えるようにする。
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            CompositeDisposable.Add(
+                new PropertyChangedEventListener(_engine, (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_engine.Subtitles):
+                        RaisePropertyChanged(nameof(SubtitleText));
+                        break;
+
+                    case nameof(_engine.Pronunciation):
+                        RaisePropertyChanged(nameof(VoiceText));
+                        break;
+
+                    case nameof(_engine.ShouldCopySubtitles):
+                        RaisePropertyChanged(nameof(ShouldCopyText));
+                        break;
+                }
+            }));
 
             if (!File.Exists("Settings.xml"))
             {
@@ -279,14 +299,23 @@ namespace Bouyomisan.ViewModels
         }
 
         // ウィンドウが閉じた
-        public new void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _appSettings.Voices = VoiceSettings;
-            _appSettings.Outputs = OutputSettings;
-            _appSettings.WordDictionary = WordDictionary;
-            _appSettings.SelectedIndex = (SelectedVoice, SelectedOutput);
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _appSettings.Voices = VoiceSettings;
+                    _appSettings.Outputs = OutputSettings;
+                    _appSettings.WordDictionary = WordDictionary;
+                    _appSettings.SelectedIndex = (SelectedVoice, SelectedOutput);
 
-            // Expansion.StaticXmlSerializer.Serialize("Settings.xml", _appSettings);
+                    // Expansion.StaticXmlSerializer.Serialize("Settings.xml", _appSettings);
+                }
+
+                _disposed = true;
+                base.Dispose(disposing);
+            }
         }
 
         // 読み上げ用文字列に辞書を適用
@@ -300,6 +329,7 @@ namespace Bouyomisan.ViewModels
             VoiceText = temp;
         }
 
+        private bool _disposed = false;
         private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
     }
 }
