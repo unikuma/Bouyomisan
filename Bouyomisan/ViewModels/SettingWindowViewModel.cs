@@ -1,5 +1,6 @@
 ﻿using Bouyomisan.Models;
 using Livet;
+using Livet.EventListeners;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -7,34 +8,29 @@ namespace Bouyomisan.ViewModels
 {
     public class SettingWindowViewModel : ViewModel
     {
-        private ApplicationSetting _appSetting = new();
-
-        public SettingWindowViewModel()
-        {
-        }
-
-        public SettingWindowViewModel(ApplicationSetting appSetting)
-        {
-            _appSetting = appSetting;
-            IsEnabledTxtOutput = _appSetting.IsEnabledTxtOutput;
-        }
-
         public void Initialize()
         {
+            CompositeDisposable.Add(
+                new PropertyChangedEventListener(_engine.AppSetting, (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_engine.AppSetting.Voices):
+                        RaisePropertyChanged(nameof(VoiceSettings));
+                        break;
+
+                    case nameof(_engine.AppSetting.Outputs):
+                        RaisePropertyChanged(nameof(OutputSettings));
+                        break;
+                }
+            }));
         }
 
-        #region VoiceSettingsプロパティ
-        /// <summary>
-        /// 声設定
-        /// </summary>
         public ObservableCollection<VoiceSetting> VoiceSettings
         {
-            get => _voiceSettings;
-            set => RaisePropertyChangedIfSet(ref _voiceSettings, value);
+            get => _engine.AppSetting.Voices;
+            set => _engine.AppSetting.Voices = value;
         }
-
-        private ObservableCollection<VoiceSetting> _voiceSettings = new();
-        #endregion
 
         #region SelectedVoiceプロパティ
         /// <summary>
@@ -66,18 +62,11 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        #region OutputSettingsプロパティ
-        /// <summary>
-        /// 出力設定
-        /// </summary>
         public ObservableCollection<OutputSetting> OutputSettings
         {
-            get => _outputSettings;
-            set => RaisePropertyChangedIfSet(ref _outputSettings, value);
+            get => _engine.AppSetting.Outputs;
+            set => _engine.AppSetting.Outputs = value;
         }
-
-        private ObservableCollection<OutputSetting> _outputSettings = new();
-        #endregion
 
         #region SelectedOutputプロパティ
         /// <summary>
@@ -108,19 +97,12 @@ namespace Bouyomisan.ViewModels
                     OutputSettings.RemoveAt(index);
             }
         }
-
-        #region WordDictionaryプロパティ
-        /// <summary>
-        /// 辞書データ
-        /// </summary>
+        
         public ObservableCollection<WordPair> WordDictionary
         {
-            get => _wordDictionary;
-            set => RaisePropertyChangedIfSet(ref _wordDictionary, value);
+            get => _engine.AppSetting.Words;
+            set => _engine.AppSetting.Words = value;
         }
-
-        private ObservableCollection<WordPair> _wordDictionary = new();
-        #endregion
 
         #region SelectedWordPairプロパティ
         /// <summary>
@@ -155,16 +137,12 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        #region IsEnabledTxtOutputプロパティ
         public bool IsEnabledTxtOutput
         {
-            get => _appSetting.IsEnabledTxtOutput;
-            set
-            {
-                _appSetting.IsEnabledTxtOutput = value;
-                RaisePropertyChanged();
-            }
+            get => _engine.AppSetting.IsEnabledTxtOutput;
+            set => _engine.AppSetting.IsEnabledTxtOutput = value;
         }
-        #endregion
+
+        private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
     }
 }

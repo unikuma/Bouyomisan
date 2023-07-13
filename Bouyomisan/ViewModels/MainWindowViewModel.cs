@@ -99,26 +99,26 @@ namespace Bouyomisan.ViewModels
         {
             CompositeDisposable.Add(
                 new PropertyChangedEventListener(_engine, (s, e) =>
+            {
+                switch (e.PropertyName)
                 {
-                    switch (e.PropertyName)
-                    {
-                        case nameof(_engine.Subtitles):
-                            RaisePropertyChanged(nameof(Subtitles));
-                            break;
+                    case nameof(_engine.Subtitles):
+                        RaisePropertyChanged(nameof(Subtitles));
+                        break;
 
-                        case nameof(_engine.Pronunciation):
-                            RaisePropertyChanged(nameof(Pronunciation));
-                            break;
+                    case nameof(_engine.Pronunciation):
+                        RaisePropertyChanged(nameof(Pronunciation));
+                        break;
 
-                        case nameof(_engine.ShouldCopySubtitles):
-                            RaisePropertyChanged(nameof(ShouldCopySubtitles));
-                            break;
+                    case nameof(_engine.ShouldCopySubtitles):
+                        RaisePropertyChanged(nameof(ShouldCopySubtitles));
+                        break;
 
-                        case nameof(_engine.ShouldOutputWavOnly):
-                            RaisePropertyChanged(nameof(ShouldOutputWavOnly));
-                            break;
-                    }
-                }));
+                    case nameof(_engine.ShouldOutputWavOnly):
+                        RaisePropertyChanged(nameof(ShouldOutputWavOnly));
+                        break;
+                }
+            }));
 
             if (!File.Exists("Settings.xml"))
             {
@@ -241,16 +241,9 @@ namespace Bouyomisan.ViewModels
         // 設定ウィンドウを開く
         public void ShowSettingWindow()
         {
-            var settingViewModel = new SettingWindowViewModel(_appSettings)
-            {
-                VoiceSettings = VoiceSettings,
-                SelectedVoice = SelectedVoice,
-                OutputSettings = OutputSettings,
-                SelectedOutput = SelectedOutput,
-                WordDictionary = WordDictionary,
-            };
-            var message = new TransitionMessage(typeof(Views.SettingWindow), settingViewModel, TransitionMode.NewOrActive, "ShowSettingWindow");
-            Messenger.Raise(message);
+            var settingViewModel = new SettingWindowViewModel();
+            Messenger.Raise(
+                new TransitionMessage(typeof(Views.SettingWindow), settingViewModel, TransitionMode.NewOrActive, "ShowSettingWindow"));
         }
 
         // ウィンドウが閉じた
