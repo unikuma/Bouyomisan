@@ -20,7 +20,6 @@ namespace Bouyomisan.Models
 
         public static readonly string SavePath = Path.GetFullPath("./Settings.xml");
 
-        // 声設定コレクション
         [XmlArray("Voices"), XmlArrayItem("Voice")]
         public ObservableCollection<VoiceSetting> Voices
         {
@@ -28,7 +27,6 @@ namespace Bouyomisan.Models
             set => RaisePropertyChangedIfSet(ref _voices, value);
         }
 
-        // 出力設定コレクション
         [XmlArray("Outputs"), XmlArrayItem("Output")]
         public ObservableCollection<OutputSetting> Outputs
         {
@@ -36,7 +34,6 @@ namespace Bouyomisan.Models
             set => RaisePropertyChangedIfSet(ref _outputs, value);
         }
 
-        // 辞書
         [XmlArray("Words"), XmlArrayItem("Word")]
         public ObservableCollection<WordPair> Words
         {
@@ -44,7 +41,18 @@ namespace Bouyomisan.Models
             set => RaisePropertyChangedIfSet(ref _words, value);
         }
 
-        // *.txt出力が有効か否か
+        public int SelectedVoiceIndex
+        {
+            get => _selectedVoiceIndex;
+            set => RaisePropertyChangedIfSet(ref _selectedVoiceIndex, value);
+        }
+
+        public int SelectedOutputIndex
+        {
+            get => _selectedOutputIndex;
+            set => RaisePropertyChangedIfSet(ref _selectedOutputIndex, value);
+        }
+
         [XmlElement("IsEnabledTxtOutput")]
         public bool IsEnabledTxtOutput
         {
@@ -55,6 +63,8 @@ namespace Bouyomisan.Models
         private ObservableCollection<VoiceSetting> _voices = new();
         private ObservableCollection<OutputSetting> _outputs = new();
         private ObservableCollection<WordPair> _words = new();
+        private int _selectedVoiceIndex = 0;
+        private int _selectedOutputIndex = 0;
         private bool _isEnabledTxtOutput;
     }
 }
