@@ -17,8 +17,6 @@ namespace Bouyomisan
         {
             try
             {
-                var exception = (Exception)e.ExceptionObject;
-
                 MessageBox.Show(
                     $"ハンドルされていない例外が発生しました",
                     "Bouyomisan エラー",
@@ -27,7 +25,7 @@ namespace Bouyomisan
 
                 File.AppendAllText(
                     "./Bouyomisan.log",
-                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "\t" + exception.Message + Environment.NewLine);
+                    DateTime.Now.ToString("[yyyy/MM/dd HH:mm:ss] ") + e.ExceptionObject + Environment.NewLine);
             }
             finally
             {
