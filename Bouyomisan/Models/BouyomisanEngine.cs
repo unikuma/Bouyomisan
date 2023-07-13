@@ -47,11 +47,18 @@ namespace Bouyomisan.Models
             }
         }
 
+        public bool ShouldOutputWavOnly
+        {
+            get => _shouldOutputWavOnly;
+            set => RaisePropertyChangedIfSet(ref _shouldOutputWavOnly, value);
+        }
+
         private BouyomisanEngine() { }
 
         private static readonly BouyomisanEngine _instance = new();
         private string _subtitles = string.Empty;
         private string _pronunciation = string.Empty;
         private bool _shouldCopySubtitles = true;
+        private bool _shouldOutputWavOnly = false;
     }
 }

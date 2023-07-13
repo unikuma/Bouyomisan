@@ -80,18 +80,11 @@ namespace Bouyomisan.ViewModels
         private ObservableCollection<WordPair> _wordDictionary = new();
         #endregion
 
-        #region ShouldWavOnlyOutputプロパティ
-        /// <summary>
-        /// Wavファイルのみ出力するべきか否か
-        /// </summary>
-        public bool ShouldWavOnlyOutput
+        public bool ShouldOutputWavOnly
         {
-            get => _shouldWavOnlyOutput;
-            set => RaisePropertyChangedIfSet(ref _shouldWavOnlyOutput, value);
+            get => _engine.ShouldOutputWavOnly;
+            set => _engine.ShouldOutputWavOnly = value;
         }
-
-        private bool _shouldWavOnlyOutput = false;
-        #endregion
 
         /// <summary>
         /// 棒読みさんのバージョン
@@ -122,6 +115,10 @@ namespace Bouyomisan.ViewModels
 
                     case nameof(_engine.ShouldCopySubtitles):
                         RaisePropertyChanged(nameof(ShouldCopySubtitles));
+                        break;
+
+                    case nameof(_engine.ShouldOutputWavOnly):
+                        RaisePropertyChanged(nameof(ShouldOutputWavOnly));
                         break;
                 }
             }));
@@ -228,7 +225,7 @@ namespace Bouyomisan.ViewModels
                     nvc.CreateTxt();
 
                 DragDrop.DoDragDrop(dragSource,
-                                    new DataObject(DataFormats.FileDrop, new string[] { ShouldWavOnlyOutput ? wavPath : nvc.CreateExo() }),
+                                    new DataObject(DataFormats.FileDrop, new string[] { ShouldOutputWavOnly ? wavPath : nvc.CreateExo() }),
                                     DragDropEffects.Copy);
             }
             catch (TimeoutException e)

@@ -140,7 +140,7 @@
 
                     <CheckBox
                         Content="Wavのみ出力"
-                        IsChecked="{Binding ShouldWavOnlyOutput}"
+                        IsChecked="{Binding ShouldOutputWavOnly}"
                         VerticalAlignment="Center"
                         Margin="4,0"
                         Grid.Row="6"/>
