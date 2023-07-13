@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Version>3.1.3</Version>
+    <ApplicationIcon>Bouyomisan.ico</ApplicationIcon>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Bouyomisan.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Bouyomisan.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LivetCask" Version="4.0.2" />
+    <PackageReference Include="NAudio.Core" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Bouyomisan.png" />
+  </ItemGroup>
+
+</Project>
