@@ -24,201 +24,320 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Grid>
-        <TabControl TabStripPlacement="Left">
-            <TabControl.Resources>
-                <Style TargetType="TabItem">
-                    <Setter Property="MinWidth" Value="80"/>
-                    <Setter Property="Height" Value="24"/>
-                </Style>
-            </TabControl.Resources>
+    <TabControl TabStripPlacement="Left">
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="MinWidth" Value="80"/>
+                <Setter Property="Height" Value="24"/>
+            </Style>
+        </TabControl.Resources>
 
-            <TabItem Header="全般">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel CanVerticallyScroll="True">
-                        <StackPanel.Resources>
-                            <Style TargetType="Expander">
-                                <Setter Property="IsExpanded" Value="True"/>
-                                <Setter Property="Margin" Value="4"/>
-                            </Style>
-                        </StackPanel.Resources>
+        <TabItem Header="全般">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel CanVerticallyScroll="True">
+                    <StackPanel.Resources>
+                        <Style TargetType="Expander">
+                            <Setter Property="IsExpanded" Value="True"/>
+                            <Setter Property="Margin" Value="4"/>
+                        </Style>
+                    </StackPanel.Resources>
 
-                        <Expander Header="テキスト出力">
-                            <Grid>
-                                <CheckBox Content="音声生成時、*.txtファイルを作成する" IsChecked="{Binding IsEnabledTxtOutput}" Margin="4">
-                                    <CheckBox.ToolTip>
-                                        <TextBlock>
+                    <Expander Header="テキスト出力">
+                        <Grid>
+                            <CheckBox
+                                Content="音声生成時、*.txtファイルを作成する"
+                                IsChecked="{Binding IsEnabledTxtOutput}"
+                                Margin="4">
+
+                                <CheckBox.ToolTip>
+                                    <TextBlock>
                                         <Run Text="PSDToolKit向け設定です。"/><LineBreak/>
                                         <Run Text="有効にした場合、音声ファイルと同じ名前、同じフォルダに出力されます。"/>
-                                        </TextBlock>
-                                    </CheckBox.ToolTip>
-                                </CheckBox>
+                                    </TextBlock>
+                                </CheckBox.ToolTip>
+                            </CheckBox>
+                        </Grid>
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="声設定">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ListBox
+                    ItemsSource="{Binding VoiceSettings}"
+                    HorizontalContentAlignment="Stretch"
+                    ScrollViewer.CanContentScroll="False"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Text="名前"
+                                    VerticalAlignment="Center"/>
+                                
+                                <TextBox
+                                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                    Grid.Column="1"/>
+
+                                <TextBlock
+                                    Text="声質"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="1"/>
+
+                                <ComboBox
+                                    ItemsSource="{x:Static m:VoiceSetting.Types}"
+                                    SelectedValue="{Binding SelectedType}"
+                                    DisplayMemberPath="Key"
+                                    SelectedValuePath="Value"
+                                    Grid.Row="1"
+                                    Grid.Column="1"/>
+
+                                <TextBlock
+                                    Text="{Binding Speed, StringFormat=速度 : {0}}"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="2"/>
+
+                                <Slider
+                                    Value="{Binding Speed}"
+                                    Minimum="50"
+                                    Maximum="300"
+                                    AutoToolTipPlacement="TopLeft"
+                                    SmallChange="1"
+                                    LargeChange="5"
+                                    Grid.Row="2"
+                                    Grid.Column="1"/>
+
+                                <TextBlock
+                                    Text="{Binding Volume, StringFormat=音量 : {0}}"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="3"/>
+
+                                <Slider
+                                    Value="{Binding Volume}"
+                                    Minimum="0"
+                                    Maximum="300"
+                                    AutoToolTipPlacement="TopLeft"
+                                    SmallChange="1" LargeChange="5"
+                                    Grid.Row="3"
+                                    Grid.Column="1"/>
+
+                                <TextBlock
+                                    Text="{Binding Pitch, StringFormat=音程 : {0}}"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="4"/>
+
+                                <Slider
+                                    Value="{Binding Pitch}"
+                                    Minimum="60"
+                                    Maximum="200"
+                                    AutoToolTipPlacement="TopLeft"
+                                    SmallChange="1"
+                                    LargeChange="5"
+                                    Grid.Row="4"
+                                    Grid.Column="1"/>
+
+                                <TextBlock
+                                    Text="補正ミリ秒"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="5"/>
+
+                                <TextBox
+                                    Text="{Binding CorrectionMillisecond}"
+                                    Grid.Row="5"
+                                    Grid.Column="1"/>
+
+                                <TextBlock
+                                    Text="Exoテンプレート"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="6"/>
+
+                                <CheckBox Content="棒読み化" IsChecked="{Binding IsBouyomi}" HorizontalAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="4,2" Grid.Row="6" Grid.Column="1"/>
+                                <TextBox Text="{Binding ExoTemplate}" AcceptsReturn="True" Height="300" VerticalScrollBarVisibility="Auto" Grid.Row="7" Grid.ColumnSpan="2"/>
+
+                                <Button
+                                    Content="設定を削除"
+                                    Grid.Row="8"
+                                    Grid.ColumnSpan="2">
+
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <l:LivetCallMethodAction
+                                                MethodName="RemoveVoice"
+                                                MethodParameter="{Binding}"
+                                                MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                             </Grid>
-                        </Expander>
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-            <TabItem Header="声設定">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-                    <ListBox ItemsSource="{Binding VoiceSettings}" HorizontalContentAlignment="Stretch" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="3*"/>
-                                    </Grid.ColumnDefinitions>
+                <Button Content="設定を追加" Grid.Row="1">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <l:LivetCallMethodAction
+                                MethodName="AddVoice"
+                                MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+        </TabItem>
+        <TabItem Header="出力設定">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                                    <TextBlock Text="名前" VerticalAlignment="Center"/>
-                                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
+                <ListBox
+                    ItemsSource="{Binding OutputSettings}"
+                    HorizontalContentAlignment="Stretch"
+                    ScrollViewer.CanContentScroll="False"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                    <TextBlock Text="声質" VerticalAlignment="Center" Grid.Row="1"/>
-                                    <ComboBox ItemsSource="{x:Static m:VoiceSetting.Types}" SelectedValue="{Binding SelectedType}" DisplayMemberPath="Key" SelectedValuePath="Value" Grid.Row="1" Grid.Column="1"/>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
 
-                                    <TextBlock Text="{Binding Speed, StringFormat=速度 : {0}}" VerticalAlignment="Center" Grid.Row="2"/>
-                                    <Slider Value="{Binding Speed}" Minimum="50" Maximum="300" AutoToolTipPlacement="TopLeft" SmallChange="1" LargeChange="5" Grid.Row="2" Grid.Column="1"/>
+                                <TextBlock
+                                    Text="名前"
+                                    VerticalAlignment="Center"/>
 
-                                    <TextBlock Text="{Binding Volume, StringFormat=音量 : {0}}" VerticalAlignment="Center" Grid.Row="3"/>
-                                    <Slider Value="{Binding Volume}" Minimum="0" Maximum="300" AutoToolTipPlacement="TopLeft" SmallChange="1" LargeChange="5" Grid.Row="3" Grid.Column="1"/>
+                                <TextBox
+                                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                    Grid.Column="1"/>
 
-                                    <TextBlock Text="{Binding Pitch, StringFormat=音程 : {0}}" VerticalAlignment="Center" Grid.Row="4"/>
-                                    <Slider Value="{Binding Pitch}" Minimum="60" Maximum="200" AutoToolTipPlacement="TopLeft" SmallChange="1" LargeChange="5" Grid.Row="4" Grid.Column="1"/>
+                                <TextBlock
+                                    Text="音声出力先"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="1"/>
 
-                                    <TextBlock Text="補正ミリ秒" VerticalAlignment="Center" Grid.Row="5"/>
-                                    <TextBox Text="{Binding CorrectionMillisecond}" Grid.Row="5" Grid.Column="1"/>
+                                <TextBox
+                                    Text="{Binding AudioOut}"
+                                    Grid.Row="1"
+                                    Grid.Column="1"/>
 
-                                    <TextBlock Text="Exoテンプレート" VerticalAlignment="Center" Grid.Row="6"/>
-                                    <CheckBox Content="棒読み化" IsChecked="{Binding IsBouyomi}" HorizontalAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="4,2" Grid.Row="6" Grid.Column="1"/>
-                                    <TextBox Text="{Binding ExoTemplate}" AcceptsReturn="True" Height="300" VerticalScrollBarVisibility="Auto" Grid.Row="7" Grid.ColumnSpan="2"/>
+                                <TextBlock
+                                    Text="{Binding AviUtlFps, StringFormat=AviUtlのFPS : {0}}"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="2"/>
 
-                                    <Button Content="設定を削除" Grid.Row="8" Grid.ColumnSpan="2">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="Click">
-                                                <l:LivetCallMethodAction MethodName="RemoveVoice" MethodParameter="{Binding}" MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </Button>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                                <Slider
+                                    Value="{Binding AviUtlFps}"
+                                    Minimum="1"
+                                    Maximum="144"
+                                    AutoToolTipPlacement="TopLeft"
+                                    SmallChange="1"
+                                    LargeChange="5"
+                                    Grid.Row="2"
+                                    Grid.Column="1"/>
 
-                    <Button Content="設定を追加" Grid.Row="1">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <l:LivetCallMethodAction MethodName="AddVoice" MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                </Grid>
-            </TabItem>
-            <TabItem Header="出力設定">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                                <Button Content="設定の削除" Grid.Row="3" Grid.ColumnSpan="2">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <l:LivetCallMethodAction
+                                                MethodName="RemoveOutput"
+                                                MethodParameter="{Binding}"
+                                                MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-                    <ListBox ItemsSource="{Binding OutputSettings}" HorizontalContentAlignment="Stretch" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                    </Grid.ColumnDefinitions>
+                <Button Content="設定を追加" Grid.Row="1">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <l:LivetCallMethodAction MethodName="AddOutput" MethodTarget="{Binding}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+        </TabItem>
 
-                                    <TextBlock Text="名前" VerticalAlignment="Center"/>
-                                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
+        <TabItem Header="辞書">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
-                                    <TextBlock Text="音声出力先" VerticalAlignment="Center" Grid.Row="1"/>
-                                    <TextBox Text="{Binding AudioOut}" Grid.Row="1" Grid.Column="1"/>
+                <DataGrid
+                    ItemsSource="{Binding WordDictionary}"
+                    SelectedIndex="{Binding SelectedWordPair}"
+                    AutoGenerateColumns="False"
+                    CanUserSortColumns="False"
+                    Grid.ColumnSpan="2">
 
-                                    <TextBlock Text="{Binding AviUtlFps, StringFormat=AviUtlのFPS : {0}}" VerticalAlignment="Center" Grid.Row="2"/>
-                                    <Slider Value="{Binding AviUtlFps}" Minimum="1" Maximum="144" AutoToolTipPlacement="TopLeft" SmallChange="1" LargeChange="5" Grid.Row="2" Grid.Column="1"/>
+                    <DataGrid.ToolTip>
+                        <TextBlock Text="辞書に登録したデータは「Delete」キーで削除することが出来ます"/>
+                    </DataGrid.ToolTip>
 
-                                    <Button Content="設定の削除" Grid.Row="3" Grid.ColumnSpan="2">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="Click">
-                                                <l:LivetCallMethodAction MethodName="RemoveOutput" MethodParameter="{Binding}" MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </Button>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="有効" Binding="{Binding IsEnable}" Width="Auto"/>
+                        <DataGridTextColumn Header="変換前" Binding="{Binding Before}" Width="1*"/>
+                        <DataGridTextColumn Header="変換後" Binding="{Binding After}" Width="1*"/>
+                        <DataGridTextColumn Header="備考" Binding="{Binding Remarks}" Width="1*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
 
-                    <Button Content="設定を追加" Grid.Row="1">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <l:LivetCallMethodAction MethodName="AddOutput" MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                </Grid>
-            </TabItem>
-            <TabItem Header="辞書">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
+                <Button Content="▲" Grid.Row="1">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <l:LivetCallMethodAction MethodName="IncreaseWordPairPriority" MethodTarget="{Binding}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
 
-                    <DataGrid ItemsSource="{Binding WordDictionary}" SelectedIndex="{Binding SelectedWordPair}" AutoGenerateColumns="False" CanUserSortColumns="False" Grid.ColumnSpan="2">
-                        <DataGrid.ToolTip>
-                            <TextBlock Text="辞書に登録したデータは「Delete」キーで削除することが出来ます"/>
-                        </DataGrid.ToolTip>
-                        <DataGrid.Columns>
-                            <DataGridCheckBoxColumn Header="有効" Binding="{Binding IsEnable}" Width="Auto"/>
-                            <DataGridTextColumn Header="変換前" Binding="{Binding Before}" Width="1*"/>
-                            <DataGridTextColumn Header="変換後" Binding="{Binding After}" Width="1*"/>
-                            <DataGridTextColumn Header="備考" Binding="{Binding Remarks}" Width="1*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <Button Content="▲" Grid.Row="1">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <l:LivetCallMethodAction MethodName="IncreaseWordPairPriority" MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                    <Button Content="▼" Grid.Row="1" Grid.Column="1">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <l:LivetCallMethodAction MethodName="DecreaseWordPairPriority" MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                </Grid>
-            </TabItem>
-        </TabControl>
-    </Grid>
+                <Button Content="▼" Grid.Row="1" Grid.Column="1">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <l:LivetCallMethodAction MethodName="DecreaseWordPairPriority" MethodTarget="{Binding}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>
