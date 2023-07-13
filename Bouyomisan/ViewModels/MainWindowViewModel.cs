@@ -97,9 +97,6 @@ namespace Bouyomisan.ViewModels
 
         public void Initialize()
         {
-            // ファイル読み書きなどでsjisを使えるようにする。
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
             CompositeDisposable.Add(
                 new PropertyChangedEventListener(_engine, (s, e) =>
             {
