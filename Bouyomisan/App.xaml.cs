@@ -20,7 +20,7 @@ namespace Bouyomisan
                 var exception = (Exception)e.ExceptionObject;
 
                 MessageBox.Show(
-                    $"ハンドルされていない例外が発生しました。" + Environment.NewLine + exception.Message,
+                    $"ハンドルされていない例外が発生しました",
                     "Bouyomisan エラー",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
