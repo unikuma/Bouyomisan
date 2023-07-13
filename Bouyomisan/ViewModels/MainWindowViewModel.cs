@@ -1,84 +1,41 @@
-﻿using Bouyomisan.Models;
-using Livet;
-using Livet.EventListeners;
-using Livet.Messaging;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
+using Bouyomisan.Models;
+using Livet;
+using Livet.EventListeners;
+using Livet.Messaging;
 
 namespace Bouyomisan.ViewModels
 {
     public class MainWindowViewModel : ViewModel
     {
-        #region VoiceSettingsプロパティ
-        /// <summary>
-        /// 声設定
-        /// </summary>
         public ObservableCollection<VoiceSetting> VoiceSettings
         {
-            get => _voiceSettings;
-            set => RaisePropertyChangedIfSet(ref _voiceSettings, value);
+            get => _engine.AppSetting.Voices;
+            set => _engine.AppSetting.Voices = value;
         }
 
-        private ObservableCollection<VoiceSetting> _voiceSettings = new();
-        #endregion
-
-        #region SelectedVoiceプロパティ
-        /// <summary>
-        /// 現在選択中の声設定のインデックス
-        /// </summary>
-        public int SelectedVoice
-        {
-            get => _selectedVoice;
-            set => RaisePropertyChangedIfSet(ref _selectedVoice, value < 0 ? 0 : value);
-        }
-
-        private int _selectedVoice = 0;
-        #endregion
-
-        #region OutputSettingsプロパティ
-        /// <summary>
-        /// 出力設定
-        /// </summary>
         public ObservableCollection<OutputSetting> OutputSettings
         {
-            get => _outputSettings;
-            set => RaisePropertyChangedIfSet(ref _outputSettings, value);
+            get => _engine.AppSetting.Outputs;
+            set => _engine.AppSetting.Outputs = value;
         }
 
-        private ObservableCollection<OutputSetting> _outputSettings = new();
-        #endregion
+        public int SelectedVoice
+        {
+            get => _engine.AppSetting.SelectedVoiceIndex;
+            set => _engine.AppSetting.SelectedVoiceIndex = value;
+        }
 
-        #region SelectedOutputプロパティ
-        /// <summary>
-        /// 現在選択中の出力設定のインデックス
-        /// </summary>
         public int SelectedOutput
         {
-            get => _selectedOutput;
-            set => RaisePropertyChangedIfSet(ref _selectedOutput, value < 0 ? 0 : value);
+            get => _engine.AppSetting.SelectedOutputIndex;
+            set => _engine.AppSetting.SelectedOutputIndex = value;
         }
-
-        private int _selectedOutput = 0;
-        #endregion
-
-        #region WordDictionaryプロパティ
-        /// <summary>
-        /// 辞書データ
-        /// </summary>
-        public ObservableCollection<WordPair> WordDictionary
-        {
-            get => _wordDictionary;
-            set => RaisePropertyChangedIfSet(ref _wordDictionary, value);
-        }
-
-        private ObservableCollection<WordPair> _wordDictionary = new();
-        #endregion
 
         public bool ShouldOutputWavOnly
         {
@@ -90,8 +47,6 @@ namespace Bouyomisan.ViewModels
         /// 棒読みさんのバージョン
         /// </summary>
         public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
-
-        private ApplicationSetting _appSettings = new();
 
         private readonly NewVoiceCreator nvc = new();
 
@@ -120,24 +75,28 @@ namespace Bouyomisan.ViewModels
                 }
             }));
 
-            if (!File.Exists("Settings.xml"))
+            CompositeDisposable.Add(
+                new PropertyChangedEventListener(_engine, (s, e) =>
             {
-                VoiceSettings.Add(new VoiceSetting() { Name = "プログラムより自動追加" });
-                OutputSettings.Add(new OutputSetting() { Name = "プログラムより自動追加" });
+                switch (e.PropertyName)
+                {
+                    case nameof(_engine.AppSetting.Voices):
+                        RaisePropertyChanged(nameof(VoiceSettings));
+                        break;
 
-                MessageBox.Show("Settings.xml が見つかりません\r\n各設定タブから設定を追加してください",
-                                "Bouyomisan",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
-                return;
-            }
+                    case nameof(_engine.AppSetting.Outputs):
+                        RaisePropertyChanged(nameof(OutputSettings));
+                        break;
 
-            // 設定ファイルを読み込んで適用する
-            // _appSettings = Expansion.StaticXmlSerializer.Deserialize<ApplicationSettings>("Settings.xml") ?? new ApplicationSettings();
+                    case nameof(_engine.AppSetting.SelectedVoiceIndex):
+                        RaisePropertyChanged(nameof(SelectedVoice));
+                        break;
 
-            VoiceSettings = _appSettings.Voices;
-            OutputSettings = _appSettings.Outputs;
-            WordDictionary = _appSettings.Words;
+                    case nameof(_engine.AppSetting.SelectedOutputIndex):
+                        RaisePropertyChanged(nameof(SelectedOutput));
+                        break;
+                }
+            }));
         }
 
         public string Subtitles
@@ -213,9 +172,6 @@ namespace Bouyomisan.ViewModels
                 nvc.SelectedVoice = VoiceSettings[SelectedVoice];
                 nvc.SelectedOutput = OutputSettings[SelectedOutput];
                 string wavPath = await nvc.CreateWavAsync();
-
-                if (_appSettings.IsEnabledTxtOutput)
-                    nvc.CreateTxt();
 
                 DragDrop.DoDragDrop(dragSource,
                                     new DataObject(DataFormats.FileDrop, new string[] { ShouldOutputWavOnly ? wavPath : nvc.CreateExo() }),
