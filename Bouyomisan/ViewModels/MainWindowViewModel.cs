@@ -97,7 +97,7 @@ namespace Bouyomisan.ViewModels
         /// </summary>
         public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
 
-        private ApplicationSettings _appSettings = new();
+        private ApplicationSetting _appSettings = new();
 
         private readonly NewVoiceCreator nvc = new();
 

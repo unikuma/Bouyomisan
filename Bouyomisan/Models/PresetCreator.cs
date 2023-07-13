@@ -22,7 +22,7 @@ namespace Bouyomisan.Models
             }
         }
 
-        public static void CreateIni(ApplicationSettings appSetting)
+        public static void CreateIni(ApplicationSetting appSetting)
         {
             string aqInit = File.ReadAllText("AquesTalkPlayer\\AquesTalkPlayer.ini", Encoding.GetEncoding("shift_jis"));
 
