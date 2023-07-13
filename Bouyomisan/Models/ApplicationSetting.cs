@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Xml.Serialization;
 using Livet;
 
@@ -7,6 +8,18 @@ namespace Bouyomisan.Models
     [XmlRoot("BouyomisanSettings")]
     public class ApplicationSetting : NotificationObject
     {
+        public static ApplicationSetting? Deserialize()
+        {
+            return (ApplicationSetting?)new XmlSerializer(typeof(ApplicationSetting)).Deserialize(File.OpenRead(SavePath));
+        }
+
+        public void Serialize()
+        {
+            new XmlSerializer(typeof(ApplicationSetting)).Serialize(File.OpenWrite(SavePath), this);
+        }
+
+        public static readonly string SavePath = Path.GetFullPath("./Settings.xml");
+
         // 声設定コレクション
         [XmlArray("Voices"), XmlArrayItem("Voice")]
         public ObservableCollection<VoiceSetting> Voices
