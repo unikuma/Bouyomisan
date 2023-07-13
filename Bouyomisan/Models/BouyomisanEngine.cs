@@ -1,9 +1,14 @@
-﻿using Livet;
+﻿using System;
+using Livet;
 
 namespace Bouyomisan.Models
 {
-    public class BouyomisanEngine : NotificationObject
+    public class BouyomisanEngine : NotificationObject, IDisposable
     {
+        public void Dispose()
+        {
+        }
+
         public static BouyomisanEngine Instance
         {
             get => _instance;
@@ -53,9 +58,22 @@ namespace Bouyomisan.Models
             set => RaisePropertyChangedIfSet(ref _shouldOutputWavOnly, value);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                }
+
+                _disposed = true;
+            }
+        }
+
         private BouyomisanEngine() { }
 
         private static readonly BouyomisanEngine _instance = new();
+        private bool _disposed = false;
         private string _subtitles = string.Empty;
         private string _pronunciation = string.Empty;
         private bool _shouldCopySubtitles = true;
