@@ -2,9 +2,6 @@
 
 namespace Bouyomisan.Models
 {
-    /// <summary>
-    /// 棒読みさんの核となる音声生成・字幕生成を担当するクラスです。
-    /// </summary>
     public class BouyomisanEngine : NotificationObject
     {
         public static BouyomisanEngine Instance
@@ -12,7 +9,49 @@ namespace Bouyomisan.Models
             get => _instance;
         }
 
+        public string Subtitles
+        {
+            get => _subtitles;
+            set
+            {
+                RaisePropertyChangedIfSet(ref _subtitles, value);
+
+                if (_subtitles == string.Empty)
+                {
+                    ShouldCopySubtitles = true;
+                }
+                if (ShouldCopySubtitles)
+                {
+                    Pronunciation = Subtitles;
+                }
+            }
+        }
+
+        public string Pronunciation
+        {
+            get => _pronunciation;
+            set => RaisePropertyChangedIfSet(ref _pronunciation, value);
+        }
+
+        public bool ShouldCopySubtitles
+        {
+            get => _shouldCopySubtitles;
+            set
+            {
+                RaisePropertyChangedIfSet(ref _shouldCopySubtitles, value);
+
+                if (_shouldCopySubtitles)
+                {
+                    Pronunciation = Subtitles;
+                }
+            }
+        }
+
         private BouyomisanEngine() { }
+
         private static readonly BouyomisanEngine _instance = new();
+        private string _subtitles = string.Empty;
+        private string _pronunciation = string.Empty;
+        private bool _shouldCopySubtitles = false;
     }
 }
