@@ -8,7 +8,8 @@
     Title="{Binding Version, StringFormat=棒読みさん {0}}"
     Width="300"
     Height="425"
-    Icon="../Resources/Bouyomisan.png">
+    Icon="../Resources/Bouyomisan.png"
+    Topmost="{Binding IsChecked, ElementName=menuTopmost}">
 
     <Window.DataContext>
         <vm:MainWindowViewModel />
@@ -26,186 +27,155 @@
         <l:InteractionMessageTrigger MessageKey="LoadingSettingFailed" Messenger="{Binding Messenger}">
             <l:InformationDialogInteractionMessageAction />
         </l:InteractionMessageTrigger>
-        
+
         <l:InteractionMessageTrigger MessageKey="ShowSettingWindow" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction/>
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Grid>
-        <TabControl Grid.Row="1">
-            <TabControl.Resources>
-                <Style TargetType="TabItem">
-                    <Setter Property="MinWidth" Value="64"/>
-                </Style>
-            </TabControl.Resources>
-
-            <TabItem Header="音声合成">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="0.75*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="0.75*"/>
-                        <RowDefinition Height="0.75*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock
-                        Text="字幕"
-                        VerticalAlignment="Center"
-                        Margin="2"
-                        Grid.ColumnSpan="2"/>
-
-                    <TextBox
-                        Text="{Binding Subtitles, UpdateSourceTrigger=PropertyChanged}"
-                        AcceptsReturn="True"
-                        VerticalScrollBarVisibility="Auto"
-                        Grid.Row="1"
-                        Grid.ColumnSpan="2"/>
-
-                    <TextBlock
-                        Text="読み方"
-                        VerticalAlignment="Center"
-                        Margin="2"
-                        Grid.Row="2">
-
-                        <TextBlock.ToolTip>
-                            <TextBlock>
-                                <Run Text="ゆっくりが読み上げるテキストです。また、#>を行頭に付けることで音声記号列として読み上げる事が出来ます"/><LineBreak/>
-                                <Run Text="(選択中の声設定の棒読み化が有効になっていると音声記号列として読み上げません)"/><LineBreak/>
-                                <Run Text="例 : 「#>これわ、おんせーき'ごーです。」"/>
-                            </TextBlock>
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-
-                    <CheckBox
-                        Content="字幕をコピー"
-                        IsChecked="{Binding ShouldCopySubtitles}"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Margin="2"
-                        Grid.Row="2"
-                        Grid.Column="1">
-
-                        <CheckBox.ToolTip>
-                            <TextBlock Text="この項目が有効の場合、常に字幕のテキストを読み方にコピーします"/>
-                        </CheckBox.ToolTip>
-                    </CheckBox>
-
-                    <TextBox
-                        Text="{Binding Pronunciation, UpdateSourceTrigger=PropertyChanged}"
-                        AcceptsReturn="True"
-                        VerticalScrollBarVisibility="Auto"
-                        Grid.Row="3"
-                        Grid.ColumnSpan="2">
-
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="GotFocus">
-                                <l:LivetCallMethodAction MethodName="DisableCopy" MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </TextBox>
-
-                    <Button Content="音声の再生" Grid.Row="4">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <l:LivetCallMethodAction MethodName="PlayVoiceText" MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-
-                    <Button Name="dragButton"
-                            Content="この領域をAviUtlにD&amp;D"
-                            Grid.Row="4"
-                            Grid.Column="1">
-
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <l:LivetCallMethodAction
-                                    MethodName="CreateExoFile"
-                                    MethodParameter="{Binding ElementName=dragButton}"
-                                    MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-
-                    <ComboBox
-                        ItemsSource="{Binding VoiceSettings}"
-                        SelectedIndex="{Binding SelectedVoice}"
-                        DisplayMemberPath="Name"
-                        Grid.Row="5"
-                        Grid.ColumnSpan="2"/>
-
-                    <CheckBox
-                        Content="Wavのみ出力"
-                        IsChecked="{Binding ShouldOutputWavOnly}"
-                        VerticalAlignment="Center"
-                        Margin="4,0"
-                        Grid.Row="6"/>
-
-                    <ComboBox
-                        ItemsSource="{Binding OutputSettings}"
-                        SelectedIndex="{Binding SelectedOutput}"
-                        DisplayMemberPath="Name"
-                        Grid.Row="6"
-                        Grid.Column="1"/>
-                </Grid>
-            </TabItem>
-
-            <TabItem Header="詳細">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <GroupBox
-                        Header="最新バージョン確認"
-                        Margin="4"
-                        Padding="4">
-
-                        <TextBlock TextWrapping="Wrap">
-                            最新版の確認はこちらのリンクからお願いします。
-                            <Run Text="{Binding Version, Mode=OneTime, StringFormat=現在のバージョン: {0}}"/>
-                            <Hyperlink NavigateUri="https://github.com/unikuma/Bouyomisan/releases/latest">配布リンク🔗</Hyperlink>
-                        </TextBlock>
-                    </GroupBox>
-
-                    <GroupBox
-                        Header="連絡先"
-                        Margin="4"
-                        Padding="4"
-                        Grid.Row="1">
-
-                        <Grid>
-                            <TextBlock TextWrapping="Wrap">
-                                不具合・バグなどの報告があれば作者Twitterまでご連絡ください。
-                                <Hyperlink NavigateUri="https://twitter.com/unikuma_sub">Twitter🔗</Hyperlink>
-                            </TextBlock>
-                        </Grid>
-                    </GroupBox>
-
-                    <Button
-                        Content="設定画面を表示"
-                        Margin="4"
-                        Padding="4"
-                        Grid.Row="2">
-
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <l:LivetCallMethodAction MethodName="ShowSettingWindow" MethodTarget="{Binding}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
-                </Grid>
-            </TabItem>
-        </TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1.25*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+    
+        <Menu Grid.ColumnSpan="2">
+            <MenuItem Header="ファイル(_F)">
+                <MenuItem Header="設定ウィンドウを表示" />
+    
+                <Separator />
+    
+                <MenuItem Header="終了(_X)">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <l:WindowInteractionMessageAction>
+                                <l:DirectInteractionMessage>
+                                    <l:WindowActionMessage Action="Close" />
+                                </l:DirectInteractionMessage>
+                            </l:WindowInteractionMessageAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </MenuItem>
+            </MenuItem>
+    
+            <MenuItem Header="ウィンドウ(_W)">
+                <MenuItem x:Name="menuTopmost" Header="ウィンドウをピン留め" IsCheckable="True" />
+    
+                <MenuItem Header="再生ボタンを非表示" IsCheckable="True">
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+    
+        <TextBlock
+            Text="字幕"
+            VerticalAlignment="Center"
+            Margin="4,2"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"/>
+    
+        <TextBox
+            Text="{Binding Subtitles, UpdateSourceTrigger=PropertyChanged}"
+            AcceptsReturn="True"
+            VerticalScrollBarVisibility="Auto"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"/>
+    
+        <TextBlock
+            Text="読み方"
+            VerticalAlignment="Center"
+            Margin="4,2"
+            Grid.Row="3">
+    
+            <TextBlock.ToolTip>
+                <TextBlock>
+                    <Run Text="ゆっくりが読み上げるテキストです。また、#>を行頭に付けることで音声記号列として読み上げる事が出来ます"/><LineBreak/>
+                    <Run Text="(選択中の声設定の棒読み化が有効になっていると音声記号列として読み上げません)"/><LineBreak/>
+                    <Run Text="例 : 「#>これわ、おんせーき'ごーです。」"/>
+                </TextBlock>
+            </TextBlock.ToolTip>
+        </TextBlock>
+    
+        <CheckBox
+            Content="字幕をコピー"
+            IsChecked="{Binding ShouldCopySubtitles}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Margin="4,2"
+            Grid.Row="3"
+            Grid.Column="1">
+    
+            <CheckBox.ToolTip>
+                <TextBlock Text="この項目が有効の場合、常に字幕のテキストを読み方にコピーします"/>
+            </CheckBox.ToolTip>
+        </CheckBox>
+    
+        <TextBox
+            Text="{Binding Pronunciation, UpdateSourceTrigger=PropertyChanged}"
+            AcceptsReturn="True"
+            VerticalScrollBarVisibility="Auto"
+            Grid.Row="4"
+            Grid.ColumnSpan="2">
+    
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="GotFocus">
+                    <l:LivetCallMethodAction MethodName="DisableCopy" MethodTarget="{Binding}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
+    
+        <Button Content="音声の再生" Grid.Row="5">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <l:LivetCallMethodAction MethodName="PlayVoiceText" MethodTarget="{Binding}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+    
+        <Button
+            Name="dragButton"
+            Content="この領域をAviUtlにD&amp;D"
+            Grid.Row="5"
+            Grid.Column="1">
+    
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <l:LivetCallMethodAction
+                        MethodName="CreateExoFile"
+                        MethodParameter="{Binding ElementName=dragButton}"
+                        MethodTarget="{Binding}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+    
+        <ComboBox
+            ItemsSource="{Binding VoiceSettings}"
+            SelectedIndex="{Binding SelectedVoice}"
+            DisplayMemberPath="Name"
+            Grid.Row="6"
+            Grid.ColumnSpan="2"/>
+    
+        <CheckBox
+            Content="Wavのみ出力"
+            IsChecked="{Binding ShouldOutputWavOnly}"
+            VerticalAlignment="Center"
+            Margin="4,0"
+            Grid.Row="7"/>
+    
+        <ComboBox
+            ItemsSource="{Binding OutputSettings}"
+            SelectedIndex="{Binding SelectedOutput}"
+            DisplayMemberPath="Name"
+            Grid.Row="7"
+            Grid.Column="1"/>
     </Grid>
 </Window>
