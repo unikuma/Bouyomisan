@@ -174,7 +174,6 @@ namespace Bouyomisan.ViewModels
 
             // 声設定を基に.presetファイルを作成する
             PresetCreator.Create(VoiceSettings);
-            PresetCreator.CreateIni(_appSettings);
 
             Process.Start(NewVoiceCreator.AquesTalkPlayerPath,
                           $"/T \"{Pronunciation.Replace("\r\n", string.Empty)}\" " +
@@ -207,7 +206,6 @@ namespace Bouyomisan.ViewModels
 
                 // 声設定を基に.presetファイルを作成する
                 PresetCreator.Create(VoiceSettings);
-                PresetCreator.CreateIni(_appSettings);
 
                 // 現在の設定を基に音声ファイルとExoファイルを作成する
                 nvc.SubtitleText = Subtitles;

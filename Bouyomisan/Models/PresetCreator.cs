@@ -21,23 +21,5 @@ namespace Bouyomisan.Models
                     stw.WriteLine(setting.ToString());
             }
         }
-
-        public static void CreateIni(ApplicationSetting appSetting)
-        {
-            string aqInit = File.ReadAllText("AquesTalkPlayer\\AquesTalkPlayer.ini", Encoding.GetEncoding("shift_jis"));
-
-            string pattern = @"bResample=\d
-resample_method=\d
-resample_fs=\d{5}
-";
-
-            aqInit = Regex.Replace(aqInit,
-                                   pattern,
-                                   $"bResample={Convert.ToInt32(appSetting.CanResample)}\r\n" +
-                                   $"resample_method={((int)appSetting.ResampleMode).ToString()}\r\n" +
-                                   $"resample_fs={((int)appSetting.ResampleFS).ToString()}\r\n");
-
-            File.WriteAllText("AquesTalkPlayer\\AquesTalkPlayer.ini", aqInit, Encoding.GetEncoding("shift_jis"));
-        }
     }
 }
