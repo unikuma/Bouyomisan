@@ -13,102 +13,65 @@ namespace Bouyomisan.ViewModels
 {
     public class MainWindowViewModel : ViewModel
     {
-        public ObservableCollection<VoiceSetting> VoiceSettings
-        {
-            get => _engine.AppSetting.Voices;
-            set => _engine.AppSetting.Voices = value;
-        }
-
-        public ObservableCollection<OutputSetting> OutputSettings
-        {
-            get => _engine.AppSetting.Outputs;
-            set => _engine.AppSetting.Outputs = value;
-        }
-
-        public int SelectedVoice
-        {
-            get => _engine.AppSetting.SelectedVoiceIndex;
-            set => _engine.AppSetting.SelectedVoiceIndex = value;
-        }
-
-        public int SelectedOutput
-        {
-            get => _engine.AppSetting.SelectedOutputIndex;
-            set => _engine.AppSetting.SelectedOutputIndex = value;
-        }
-
-        public bool ShouldOutputWavOnly
-        {
-            get => _engine.ShouldOutputWavOnly;
-            set => _engine.ShouldOutputWavOnly = value;
-        }
-
-        /// <summary>
-        /// 棒読みさんのバージョン
-        /// </summary>
-        public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
-
-        private readonly NewVoiceCreator nvc = new();
-
         public void Initialize()
         {
             CompositeDisposable.Add(
                 new PropertyChangedEventListener(_engine, (s, e) =>
-            {
-                switch (e.PropertyName)
                 {
-                    case nameof(_engine.Subtitles):
-                        RaisePropertyChanged(nameof(Subtitles));
-                        break;
+                    switch (e.PropertyName)
+                    {
+                        case nameof(_engine.Subtitles):
+                            RaisePropertyChanged(nameof(Subtitles));
+                            break;
 
-                    case nameof(_engine.Pronunciation):
-                        RaisePropertyChanged(nameof(Pronunciation));
-                        break;
+                        case nameof(_engine.Pronunciation):
+                            RaisePropertyChanged(nameof(Pronunciation));
+                            break;
 
-                    case nameof(_engine.ShouldCopySubtitles):
-                        RaisePropertyChanged(nameof(ShouldCopySubtitles));
-                        break;
+                        case nameof(_engine.ShouldCopySubtitles):
+                            RaisePropertyChanged(nameof(ShouldCopySubtitles));
+                            break;
 
-                    case nameof(_engine.ShouldOutputWavOnly):
-                        RaisePropertyChanged(nameof(ShouldOutputWavOnly));
-                        break;
-                }
-            }));
+                        case nameof(_engine.ShouldOutputWavOnly):
+                            RaisePropertyChanged(nameof(ShouldOutputWavOnly));
+                            break;
+                    }
+                }));
 
             CompositeDisposable.Add(
                 new PropertyChangedEventListener(_engine, (s, e) =>
-            {
-                switch (e.PropertyName)
                 {
-                    case nameof(_engine.AppSetting.Voices):
-                        RaisePropertyChanged(nameof(VoiceSettings));
-                        break;
+                    switch (e.PropertyName)
+                    {
+                        case nameof(_engine.AppSetting.Voices):
+                            RaisePropertyChanged(nameof(VoiceSettings));
+                            break;
 
-                    case nameof(_engine.AppSetting.Outputs):
-                        RaisePropertyChanged(nameof(OutputSettings));
-                        break;
+                        case nameof(_engine.AppSetting.Outputs):
+                            RaisePropertyChanged(nameof(OutputSettings));
+                            break;
 
-                    case nameof(_engine.AppSetting.SelectedVoiceIndex):
-                        RaisePropertyChanged(nameof(SelectedVoice));
-                        break;
+                        case nameof(_engine.AppSetting.SelectedVoiceIndex):
+                            RaisePropertyChanged(nameof(SelectedVoice));
+                            break;
 
-                    case nameof(_engine.AppSetting.SelectedOutputIndex):
-                        RaisePropertyChanged(nameof(SelectedOutput));
-                        break;
-                }
-            }));
+                        case nameof(_engine.AppSetting.SelectedOutputIndex):
+                            RaisePropertyChanged(nameof(SelectedOutput));
+                            break;
+                    }
+                }));
         }
 
-        public string Subtitles
+        public void ShowSettingWindow()
         {
-            get => _engine.Subtitles;
-            set => _engine.Subtitles = value;
+            var settingViewModel = new SettingWindowViewModel();
+            Messenger.Raise(
+                new TransitionMessage(typeof(Views.SettingWindow), settingViewModel, TransitionMode.NewOrActive, "ShowSettingWindow"));
         }
 
-        public string Pronunciation
+        public void DisableCopy()
         {
-            get => _engine.Pronunciation;
-            set => _engine.Pronunciation = value;
+            ShouldCopySubtitles = false;
         }
 
         // 読み上げ用文字列をAquesTalkPlayerで再生する
@@ -183,23 +146,54 @@ namespace Bouyomisan.ViewModels
             }
         }
 
+        public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
+
+        public string Subtitles
+        {
+            get => _engine.Subtitles;
+            set => _engine.Subtitles = value;
+        }
+
+        public string Pronunciation
+        {
+            get => _engine.Pronunciation;
+            set => _engine.Pronunciation = value;
+        }
+
         public bool ShouldCopySubtitles
         {
             get => _engine.ShouldCopySubtitles;
             set => _engine.ShouldCopySubtitles = value;
         }
 
-        public void DisableCopy()
+        public ObservableCollection<VoiceSetting> VoiceSettings
         {
-            ShouldCopySubtitles = false;
+            get => _engine.AppSetting.Voices;
+            set => _engine.AppSetting.Voices = value;
         }
 
-        // 設定ウィンドウを開く
-        public void ShowSettingWindow()
+        public ObservableCollection<OutputSetting> OutputSettings
         {
-            var settingViewModel = new SettingWindowViewModel();
-            Messenger.Raise(
-                new TransitionMessage(typeof(Views.SettingWindow), settingViewModel, TransitionMode.NewOrActive, "ShowSettingWindow"));
+            get => _engine.AppSetting.Outputs;
+            set => _engine.AppSetting.Outputs = value;
+        }
+
+        public int SelectedVoice
+        {
+            get => _engine.AppSetting.SelectedVoiceIndex;
+            set => _engine.AppSetting.SelectedVoiceIndex = value;
+        }
+
+        public int SelectedOutput
+        {
+            get => _engine.AppSetting.SelectedOutputIndex;
+            set => _engine.AppSetting.SelectedOutputIndex = value;
+        }
+
+        public bool ShouldOutputWavOnly
+        {
+            get => _engine.ShouldOutputWavOnly;
+            set => _engine.ShouldOutputWavOnly = value;
         }
 
         // ウィンドウが閉じた
@@ -219,5 +213,6 @@ namespace Bouyomisan.ViewModels
 
         private bool _disposed = false;
         private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
+        private readonly NewVoiceCreator nvc = new();
     }
 }

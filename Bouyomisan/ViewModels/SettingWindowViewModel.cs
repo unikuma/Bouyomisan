@@ -22,22 +22,17 @@ namespace Bouyomisan.ViewModels
                     case nameof(_engine.AppSetting.Outputs):
                         RaisePropertyChanged(nameof(OutputSettings));
                         break;
+
+                    case nameof(_engine.AppSetting.SelectedVoiceIndex):
+                        RaisePropertyChanged(nameof(SelectedVoice));
+                        break;
+
+                    case nameof(_engine.AppSetting.SelectedOutputIndex):
+                        RaisePropertyChanged(nameof(SelectedOutput));
+                        break;
                 }
             }));
         }
-
-        public ObservableCollection<VoiceSetting> VoiceSettings
-        {
-            get => _engine.AppSetting.Voices;
-            set => _engine.AppSetting.Voices = value;
-        }
-
-        #region SelectedVoiceプロパティ
-        /// <summary>
-        /// 現在選択中の声設定のインデックス
-        /// </summary>
-        public int SelectedVoice { get; init; }
-        #endregion
 
         // 声設定を追加します
         public void AddVoice()
@@ -62,19 +57,6 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        public ObservableCollection<OutputSetting> OutputSettings
-        {
-            get => _engine.AppSetting.Outputs;
-            set => _engine.AppSetting.Outputs = value;
-        }
-
-        #region SelectedOutputプロパティ
-        /// <summary>
-        /// 現在選択中の出力設定のインデックス
-        /// </summary>
-        public int SelectedOutput { get; init; }
-        #endregion
-
         // 出力設定を追加します
         public void AddOutput()
         {
@@ -97,19 +79,6 @@ namespace Bouyomisan.ViewModels
                     OutputSettings.RemoveAt(index);
             }
         }
-        
-        public ObservableCollection<WordPair> WordDictionary
-        {
-            get => _engine.AppSetting.Words;
-            set => _engine.AppSetting.Words = value;
-        }
-
-        #region SelectedWordPairプロパティ
-        /// <summary>
-        /// 現在選択中の辞書データのインデックス
-        /// </summary>
-        public int SelectedWordPair { get; set; }
-        #endregion
 
         // 登録された辞書データの優先度を上げます
         public void IncreaseWordPairPriority()
@@ -136,6 +105,43 @@ namespace Bouyomisan.ViewModels
                 SelectedWordPair = ++n;
             }
         }
+
+        public ObservableCollection<VoiceSetting> VoiceSettings
+        {
+            get => _engine.AppSetting.Voices;
+            set => _engine.AppSetting.Voices = value;
+        }
+
+        public ObservableCollection<OutputSetting> OutputSettings
+        {
+            get => _engine.AppSetting.Outputs;
+            set => _engine.AppSetting.Outputs = value;
+        }
+
+        public ObservableCollection<WordPair> WordDictionary
+        {
+            get => _engine.AppSetting.Words;
+            set => _engine.AppSetting.Words = value;
+        }
+
+        public int SelectedVoice
+        {
+            get => _engine.AppSetting.SelectedVoiceIndex;
+            set => _engine.AppSetting.SelectedVoiceIndex = value;
+        }
+
+        public int SelectedOutput
+        {
+            get => _engine.AppSetting.SelectedOutputIndex;
+            set => _engine.AppSetting.SelectedOutputIndex = value;
+        }
+
+        #region SelectedWordPairプロパティ
+        /// <summary>
+        /// 現在選択中の辞書データのインデックス
+        /// </summary>
+        public int SelectedWordPair { get; set; }
+        #endregion
 
         public bool IsEnabledTxtOutput
         {
