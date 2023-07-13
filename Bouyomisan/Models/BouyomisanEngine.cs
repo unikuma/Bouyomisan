@@ -7,6 +7,8 @@ namespace Bouyomisan.Models
     {
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public static BouyomisanEngine Instance
@@ -69,6 +71,7 @@ namespace Bouyomisan.Models
             {
                 if (disposing)
                 {
+                    _appSetting.Serialize();
                 }
 
                 _disposed = true;

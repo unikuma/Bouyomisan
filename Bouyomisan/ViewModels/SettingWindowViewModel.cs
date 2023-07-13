@@ -166,41 +166,5 @@ namespace Bouyomisan.ViewModels
             }
         }
         #endregion
-
-        #region CanResampleプロパティ
-        public bool CanResample
-        {
-            get => _appSetting.CanResample;
-            set
-            {
-                _appSetting.CanResample = value;
-                RaisePropertyChanged();
-            }
-        }
-        #endregion
-
-        #region ResampleModeプロパティ
-        public ResampleMode ResampleMode
-        {
-            get => _appSetting.ResampleMode;
-            set
-            {
-                _appSetting.ResampleMode = value;
-                RaisePropertyChanged();
-            }
-        }
-        #endregion
-
-        #region ResampleFSプロパティ
-        public ResampleFS ResampleFS
-        {
-            get => _appSetting.ResampleFS;
-            set
-            {
-                _appSetting.ResampleFS = value;
-                RaisePropertyChanged();
-            }
-        }
-        #endregion
     }
 }

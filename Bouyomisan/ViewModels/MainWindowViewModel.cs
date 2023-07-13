@@ -265,11 +265,7 @@ namespace Bouyomisan.ViewModels
             {
                 if (disposing)
                 {
-                    _appSettings.Voices = VoiceSettings;
-                    _appSettings.Outputs = OutputSettings;
-                    _appSettings.Words = WordDictionary;
-
-                    // Expansion.StaticXmlSerializer.Serialize("Settings.xml", _appSettings);
+                    _engine.Dispose();
                 }
 
                 _disposed = true;
