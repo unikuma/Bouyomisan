@@ -52,6 +52,6 @@ namespace Bouyomisan.Models
         private static readonly BouyomisanEngine _instance = new();
         private string _subtitles = string.Empty;
         private string _pronunciation = string.Empty;
-        private bool _shouldCopySubtitles = false;
+        private bool _shouldCopySubtitles = true;
     }
 }

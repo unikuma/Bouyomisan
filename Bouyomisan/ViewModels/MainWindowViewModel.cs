@@ -113,15 +113,15 @@ namespace Bouyomisan.ViewModels
                 switch (e.PropertyName)
                 {
                     case nameof(_engine.Subtitles):
-                        RaisePropertyChanged(nameof(SubtitleText));
+                        RaisePropertyChanged(nameof(Subtitles));
                         break;
 
                     case nameof(_engine.Pronunciation):
-                        RaisePropertyChanged(nameof(VoiceText));
+                        RaisePropertyChanged(nameof(Pronunciation));
                         break;
 
                     case nameof(_engine.ShouldCopySubtitles):
-                        RaisePropertyChanged(nameof(ShouldCopyText));
+                        RaisePropertyChanged(nameof(ShouldCopySubtitles));
                         break;
                 }
             }));
@@ -148,45 +148,22 @@ namespace Bouyomisan.ViewModels
             SelectedOutput = _appSettings.SelectedIndex.output;
         }
 
-        #region SubtitleTextプロパティ
-        /// <summary>
-        /// AviUtl上での字幕になる文字列
-        /// </summary>
-        public string SubtitleText
+        public string Subtitles
         {
-            get => _subtitleText;
-            set
-            {
-                if (ShouldCopyText)
-                    ApplyDictionary(value);
-
-                RaisePropertyChangedIfSet(ref _subtitleText, value);
-
-                if (value == string.Empty)
-                    ShouldCopyText = true;
-            }
+            get => _engine.Subtitles;
+            set => _engine.Subtitles = value;
         }
 
-        private string _subtitleText = string.Empty;
-        #endregion
-
-        #region VoiceTextプロパティ
-        /// <summary>
-        /// AquesTalkPlayerを通して読み上げる文字列
-        /// </summary>
-        public string VoiceText
+        public string Pronunciation
         {
-            get => _voiceText;
-            set => RaisePropertyChangedIfSet(ref _voiceText, value);
+            get => _engine.Pronunciation;
+            set => _engine.Pronunciation = value;
         }
-
-        private string _voiceText = string.Empty;
-        #endregion
 
         // 読み上げ用文字列をAquesTalkPlayerで再生する
         public void PlayVoiceText()
         {
-            if (string.IsNullOrWhiteSpace(VoiceText))
+            if (string.IsNullOrWhiteSpace(Pronunciation))
             {
                 MessageBox.Show("読み上げる文字列が無い為、音声を再生できません",
                                 "Bouyomisan",
@@ -208,13 +185,13 @@ namespace Bouyomisan.ViewModels
             PresetCreator.CreateIni(_appSettings);
 
             Process.Start(NewVoiceCreator.AquesTalkPlayerPath,
-                          $"/T \"{VoiceText.Replace("\r\n", string.Empty)}\" " +
+                          $"/T \"{Pronunciation.Replace("\r\n", string.Empty)}\" " +
                           $"/P \"{VoiceSettings[SelectedVoice].Name}\"");
         }
 
         public async void CreateExoFile(DependencyObject dragSource)
         {
-            if (string.IsNullOrWhiteSpace(VoiceText))
+            if (string.IsNullOrWhiteSpace(Pronunciation))
             {
                 MessageBox.Show("読み上げる文字列が無い為、音声ファイルを作成できません",
                                 "Bouyomisan",
@@ -241,8 +218,8 @@ namespace Bouyomisan.ViewModels
                 PresetCreator.CreateIni(_appSettings);
 
                 // 現在の設定を基に音声ファイルとExoファイルを作成する
-                nvc.SubtitleText = SubtitleText;
-                nvc.VoiceText = VoiceText;
+                nvc.SubtitleText = Subtitles;
+                nvc.VoiceText = Pronunciation;
                 nvc.SelectedVoice = VoiceSettings[SelectedVoice];
                 nvc.SelectedOutput = OutputSettings[SelectedOutput];
                 string wavPath = await nvc.CreateWavAsync();
@@ -260,27 +237,15 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        #region ShouldCopyTextプロパティ
-        /// <summary>
-        /// 字幕用文字列を読み上げ用文字列にコピーするべきか否か
-        /// </summary>
-        public bool ShouldCopyText
+        public bool ShouldCopySubtitles
         {
-            get => _shouldCopyText;
-            set
-            {
-                if (value)
-                    ApplyDictionary(SubtitleText);
-                RaisePropertyChangedIfSet(ref _shouldCopyText, value);
-            }
+            get => _engine.ShouldCopySubtitles;
+            set => _engine.ShouldCopySubtitles = value;
         }
-
-        private bool _shouldCopyText = true;
-        #endregion
 
         public void DisableCopy()
         {
-            ShouldCopyText = false;
+            ShouldCopySubtitles = false;
         }
 
         // 設定ウィンドウを開く
@@ -326,7 +291,7 @@ namespace Bouyomisan.ViewModels
             foreach (var data in WordDictionary)
                 temp = data.IsEnable ? Regex.Replace(temp, data.Before, data.After, RegexOptions.IgnoreCase) : temp;
 
-            VoiceText = temp;
+            Pronunciation = temp;
         }
 
         private bool _disposed = false;

@@ -59,7 +59,7 @@
                         Grid.ColumnSpan="2"/>
 
                     <TextBox
-                        Text="{Binding SubtitleText, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Subtitles, UpdateSourceTrigger=PropertyChanged}"
                         AcceptsReturn="True"
                         VerticalScrollBarVisibility="Auto"
                         Grid.Row="1"
@@ -82,7 +82,7 @@
 
                     <CheckBox
                         Content="字幕をコピー"
-                        IsChecked="{Binding ShouldCopyText}"
+                        IsChecked="{Binding ShouldCopySubtitles}"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Margin="2"
@@ -95,7 +95,7 @@
                     </CheckBox>
 
                     <TextBox
-                        Text="{Binding VoiceText, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Pronunciation, UpdateSourceTrigger=PropertyChanged}"
                         AcceptsReturn="True"
                         VerticalScrollBarVisibility="Auto"
                         Grid.Row="3"
