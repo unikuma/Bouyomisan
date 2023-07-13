@@ -261,17 +261,6 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        // 読み上げ用文字列に辞書を適用
-        private void ApplyDictionary(string value)
-        {
-            string temp = value;
-
-            foreach (var data in WordDictionary)
-                temp = data.IsEnable ? Regex.Replace(temp, data.Before, data.After, RegexOptions.IgnoreCase) : temp;
-
-            Pronunciation = temp;
-        }
-
         private bool _disposed = false;
         private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
     }
