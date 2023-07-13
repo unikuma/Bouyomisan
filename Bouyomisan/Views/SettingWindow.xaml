@@ -55,45 +55,6 @@
                                 </CheckBox>
                             </Grid>
                         </Expander>
-
-                        <Expander Header="リサンプリング">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="1*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <CheckBox Content="リサンプリングを有効にする" IsChecked="{Binding CanResample}" Margin="4" Grid.ColumnSpan="2"/>
-                                <ComboBox ItemsSource="{x:Static m:ApplicationSetting.ResampleModes}" SelectedValue="{Binding ResampleMode}" DisplayMemberPath="Key" SelectedValuePath="Value" Margin="4" Grid.Row="1">
-                                    <ComboBox.Style>
-                                        <Style TargetType="ComboBox">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding CanResample}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBox.Style>
-                                </ComboBox>
-                                <ComboBox ItemsSource="{x:Static m:ApplicationSetting.ResampleFSs}" SelectedValue="{Binding ResampleFS}" DisplayMemberPath="Key" SelectedValuePath="Value" Margin="4" Grid.Row="1" Grid.Column="1">
-                                    <ComboBox.Style>
-                                        <Style TargetType="ComboBox">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding CanResample}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ComboBox.Style>
-                                </ComboBox>
-                            </Grid>
-                        </Expander>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

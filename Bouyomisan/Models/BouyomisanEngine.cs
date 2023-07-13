@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Livet;
 
 namespace Bouyomisan.Models
@@ -80,23 +81,28 @@ namespace Bouyomisan.Models
 
         private BouyomisanEngine()
         {
-            var temp = ApplicationSetting.Deserialize();
-
-            if (temp == null)
+            if (!File.Exists(ApplicationSetting.SavePath))
             {
-                temp = new()
+                _appSetting = new()
                 {
-                    Voices = { new() { Name = "プログラムより追加" } },
-                    Outputs = { new() { Name = "プログラムより追加" } }
+                    Voices = { new() { Name = "プログラムにより追加" } },
+                    Outputs = { new() { Name = "プログラムにより追加" } }
                 };
+                return;
             }
 
+            var temp = ApplicationSetting.Deserialize();
+            temp ??= new()
+            {
+                Voices = { new() { Name = "プログラムにより追加" } },
+                Outputs = { new() { Name = "プログラムにより追加" } }
+            };
             _appSetting = temp;
         }
 
         private static readonly BouyomisanEngine _instance = new();
-        private readonly ApplicationSetting _appSetting;
         private bool _disposed = false;
+        private readonly ApplicationSetting _appSetting;
         private string _subtitles = string.Empty;
         private string _pronunciation = string.Empty;
         private bool _shouldCopySubtitles = true;

@@ -23,6 +23,10 @@
             <l:DataContextDisposeAction />
         </i:EventTrigger>
 
+        <l:InteractionMessageTrigger MessageKey="LoadingSettingFailed" Messenger="{Binding Messenger}">
+            <l:InformationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
+        
         <l:InteractionMessageTrigger MessageKey="ShowSettingWindow" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction/>
         </l:InteractionMessageTrigger>

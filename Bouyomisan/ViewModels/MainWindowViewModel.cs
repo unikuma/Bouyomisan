@@ -99,26 +99,26 @@ namespace Bouyomisan.ViewModels
         {
             CompositeDisposable.Add(
                 new PropertyChangedEventListener(_engine, (s, e) =>
-            {
-                switch (e.PropertyName)
                 {
-                    case nameof(_engine.Subtitles):
-                        RaisePropertyChanged(nameof(Subtitles));
-                        break;
+                    switch (e.PropertyName)
+                    {
+                        case nameof(_engine.Subtitles):
+                            RaisePropertyChanged(nameof(Subtitles));
+                            break;
 
-                    case nameof(_engine.Pronunciation):
-                        RaisePropertyChanged(nameof(Pronunciation));
-                        break;
+                        case nameof(_engine.Pronunciation):
+                            RaisePropertyChanged(nameof(Pronunciation));
+                            break;
 
-                    case nameof(_engine.ShouldCopySubtitles):
-                        RaisePropertyChanged(nameof(ShouldCopySubtitles));
-                        break;
+                        case nameof(_engine.ShouldCopySubtitles):
+                            RaisePropertyChanged(nameof(ShouldCopySubtitles));
+                            break;
 
-                    case nameof(_engine.ShouldOutputWavOnly):
-                        RaisePropertyChanged(nameof(ShouldOutputWavOnly));
-                        break;
-                }
-            }));
+                        case nameof(_engine.ShouldOutputWavOnly):
+                            RaisePropertyChanged(nameof(ShouldOutputWavOnly));
+                            break;
+                    }
+                }));
 
             if (!File.Exists("Settings.xml"))
             {
