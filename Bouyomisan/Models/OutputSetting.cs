@@ -7,7 +7,7 @@ namespace Bouyomisan.Models
     {
         private string _Name = "デフォルト30";
         private byte _AviUtlFps = 30;
-        private string _AudioOut = @".\AudioOut";
+        private string _AudioOut = @"./AudioOut";
 
         [XmlElement("Name")]
         public string Name
