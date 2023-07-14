@@ -151,6 +151,7 @@ _name=標準再生
         [Description("中性２"), VoiceEngine("AquesTalk2")] Aq_teto1,
     }
 
+    [AttributeUsage(AttributeTargets.Field)]
     public class VoiceEngineAttribute : Attribute
     {
         public string EngineName { get; set; } = string.Empty;
