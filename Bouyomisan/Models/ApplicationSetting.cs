@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Livet;
@@ -32,7 +33,25 @@ namespace Bouyomisan.Models
             }
         }
 
+        public void WritePreset()
+        {
+            if (!Directory.Exists(PresetDir))
+            {
+                Directory.CreateDirectory(PresetDir);
+            }
+
+            using (var stw = new StreamWriter(PresetDir + "AquesTalkPlayer.preset", append: false, Encoding.GetEncoding("shift_jis")))
+            {
+                stw.WriteLine("プリセット名,棒読み,エンジン,声種,話速,音量,高さ,アクセント,声質,音程,メモ");
+                foreach (var voice in Voices)
+                {
+                    stw.WriteLine(voice.ToString());
+                }
+            }
+        }
+
         public static readonly string SavePath = Path.GetFullPath("./Settings.xml");
+        public static readonly string PresetDir = Path.GetFullPath("./AquesTalkPlayer/");
 
         [XmlArray("Voices"), XmlArrayItem("Voice")]
         public ObservableCollection<VoiceSetting> Voices
