@@ -27,6 +27,10 @@
         <l:InteractionMessageTrigger MessageKey="ShowSettingWindow" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction/>
         </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="BEngineError" Messenger="{Binding Messenger}">
+            <l:InformationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <Grid>
@@ -138,7 +142,7 @@
         <Button Content="音声の再生" Grid.Row="5">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <l:LivetCallMethodAction MethodName="PlayVoiceText" MethodTarget="{Binding}"/>
+                    <l:LivetCallMethodAction MethodName="PlayPronunciation" MethodTarget="{Binding}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>

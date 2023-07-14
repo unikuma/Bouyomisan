@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -35,11 +36,15 @@ namespace Bouyomisan.ViewModels
                         case nameof(_engine.ShouldOutputWavOnly):
                             RaisePropertyChanged(nameof(ShouldOutputWavOnly));
                             break;
+
+                        case nameof(_engine.LastGeneratedFile):
+                            Messenger.Raise(new());
+                            break;
                     }
                 }));
 
             CompositeDisposable.Add(
-                new PropertyChangedEventListener(_engine, (s, e) =>
+                new PropertyChangedEventListener(_engine.AppSetting, (s, e) =>
                 {
                     switch (e.PropertyName)
                     {
@@ -74,32 +79,30 @@ namespace Bouyomisan.ViewModels
             ShouldCopySubtitles = false;
         }
 
-        // 読み上げ用文字列をAquesTalkPlayerで再生する
-        public void PlayVoiceText()
+        public void PlayPronunciation()
         {
+            if (!File.Exists(BouyomisanEngine.AquesTalkPath))
+            {
+                Messenger.Raise(
+                    new InformationMessage(
+                        "指定の場所にAquesTalkPlayer.exeが存在しない為、音声の再生が出来ません",
+                        "Bouyomisan エラー",
+                        MessageBoxImage.Error,
+                        "BEngineError"));
+                return;
+            }
             if (string.IsNullOrWhiteSpace(Pronunciation))
             {
-                MessageBox.Show("読み上げる文字列が無い為、音声を再生できません",
-                                "Bouyomisan",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-                return;
-            }
-            if (!File.Exists(NewVoiceCreator.AquesTalkPlayerPath))
-            {
-                MessageBox.Show($"指定の場所にAquesTalkPlayer.exeが存在しない為、音声を再生できません",
-                                "Bouyomisan",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                Messenger.Raise(
+                    new InformationMessage(
+                        "読み上げる文字列が無いため再生できません",
+                        "Bouyomisan エラー",
+                        MessageBoxImage.Error,
+                        "BEngineError"));
                 return;
             }
 
-            // 声設定を基に.presetファイルを作成する
-            PresetCreator.Create(VoiceSettings);
-
-            Process.Start(NewVoiceCreator.AquesTalkPlayerPath,
-                          $"/T \"{Pronunciation.Replace("\r\n", string.Empty)}\" " +
-                          $"/P \"{VoiceSettings[SelectedVoiceIndex].Name}\"");
+            _engine.PlayPronunciation();
         }
 
         public async void CreateExoFile(DependencyObject dragSource)
@@ -146,9 +149,9 @@ namespace Bouyomisan.ViewModels
             }
         }
 
-        #pragma warning disable CA1822
-        public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
-        #pragma warning restore CA1822
+#pragma warning disable CA1822
+        public string Title => "Bouyomisan v4.0.0 Preview 1";
+#pragma warning restore CA1822
 
         public string Subtitles
         {

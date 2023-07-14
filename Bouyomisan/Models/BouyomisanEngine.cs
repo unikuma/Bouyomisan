@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Livet;
 
@@ -6,11 +7,28 @@ namespace Bouyomisan.Models
 {
     public class BouyomisanEngine : NotificationObject, IDisposable
     {
+        public void PlayPronunciation()
+        {
+            AppSetting.WritePreset();
+            Process.Start(
+                AquesTalkPath,
+                $"/T \"{Pronunciation.Replace(Environment.NewLine, string.Empty)}\" " +
+                $"/P \"{AppSetting.Voices[AppSetting.SelectedVoiceIndex].Name}\"");
+        }
+
+        public void CreateFile()
+        {
+            AppSetting.WritePreset();
+
+        }
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        public static readonly string AquesTalkPath = Path.GetFullPath("./AquesTalkPlayer/AquesTalkPlayer.exe");
 
         public static BouyomisanEngine Instance
         {
@@ -66,6 +84,12 @@ namespace Bouyomisan.Models
             set => RaisePropertyChangedIfSet(ref _shouldOutputWavOnly, value);
         }
 
+        public string LastGeneratedFile
+        {
+            get => _lastGeneratedFile;
+            private set => RaisePropertyChangedIfSet(ref _lastGeneratedFile, value);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -110,6 +134,14 @@ namespace Bouyomisan.Models
             _appSetting = temp;
         }
 
+        private void ThrowIfPronunciationIsNullOrWhitespace()
+        {
+            if (string.IsNullOrWhiteSpace(Pronunciation))
+            {
+                throw new Exception("読み上げる文字列がありません");
+            }
+        }
+
         private static readonly BouyomisanEngine _instance = new();
         private bool _disposed = false;
         private readonly ApplicationSetting _appSetting;
@@ -117,5 +149,6 @@ namespace Bouyomisan.Models
         private string _pronunciation = string.Empty;
         private bool _shouldCopySubtitles = true;
         private bool _shouldOutputWavOnly = false;
+        private string _lastGeneratedFile = string.Empty;
     }
 }
