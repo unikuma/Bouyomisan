@@ -92,11 +92,16 @@ namespace Bouyomisan.Models
             }
 
             var temp = ApplicationSetting.Deserialize();
-            temp ??= new()
+            temp ??= new();
+
+            if (temp.Voices.Count == 0)
             {
-                Voices = { new() { Name = "プログラムにより追加" } },
-                Outputs = { new() { Name = "プログラムにより追加" } }
-            };
+                temp.Voices.Add(new() { Name = "プログラムにより追加" });
+            }
+            if (temp.Outputs.Count == 0)
+            {
+                temp.Outputs.Add(new() { Name = "プログラムにより追加" });
+            }
 
             for (int i = 0; i < temp.Voices.Count; i++)
             {
