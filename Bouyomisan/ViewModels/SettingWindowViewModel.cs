@@ -1,6 +1,8 @@
 ﻿using Bouyomisan.Models;
 using Livet;
 using Livet.EventListeners;
+using Livet.Messaging;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -12,71 +14,87 @@ namespace Bouyomisan.ViewModels
         {
             CompositeDisposable.Add(
                 new PropertyChangedEventListener(_engine.AppSetting, (s, e) =>
-            {
-                switch (e.PropertyName)
                 {
-                    case nameof(_engine.AppSetting.Voices):
-                        RaisePropertyChanged(nameof(VoiceSettings));
-                        break;
+                    switch (e.PropertyName)
+                    {
+                        case nameof(_engine.AppSetting.Voices):
+                            RaisePropertyChanged(nameof(VoiceSettings));
+                            break;
 
-                    case nameof(_engine.AppSetting.Outputs):
-                        RaisePropertyChanged(nameof(OutputSettings));
-                        break;
+                        case nameof(_engine.AppSetting.Outputs):
+                            RaisePropertyChanged(nameof(OutputSettings));
+                            break;
 
-                    case nameof(_engine.AppSetting.SelectedVoiceIndex):
-                        RaisePropertyChanged(nameof(SelectedVoiceIndex));
-                        break;
+                        case nameof(_engine.AppSetting.SelectedVoiceIndex):
+                            RaisePropertyChanged(nameof(SelectedVoiceIndex));
+                            break;
 
-                    case nameof(_engine.AppSetting.SelectedOutputIndex):
-                        RaisePropertyChanged(nameof(SelectedOutputIndex));
-                        break;
-                }
-            }));
+                        case nameof(_engine.AppSetting.SelectedOutputIndex):
+                            RaisePropertyChanged(nameof(SelectedOutputIndex));
+                            break;
+                    }
+                }));
         }
 
-        // 声設定を追加します
         public void AddVoice()
         {
             VoiceSettings.Add(new VoiceSetting());
         }
 
-        // 声設定を削除します
         public void RemoveVoice(VoiceSetting voice)
         {
-            if (MessageBoxResult.Yes == MessageBox.Show($"{voice.Name} を削除してもよろしいですか？",
-                                                        "Bouyomisan",
-                                                        MessageBoxButton.YesNo,
-                                                        MessageBoxImage.Warning))
+            if (VoiceSettings.IndexOf(voice) == SelectedVoiceIndex)
             {
-                int index = VoiceSettings.IndexOf(voice);
+                Messenger.Raise(
+                    new InformationMessage(
+                        "現在選択中の声設定を削除することは出来ません",
+                        "Bouyomisan エラー",
+                        MessageBoxImage.Error,
+                        "CannotRemove"));
+                return;
+            }
 
-                if (SelectedVoiceIndex == index)
-                    MessageBox.Show("現在選択中の声設定を削除する事はできません", "Bouyomisan", MessageBoxButton.OK, MessageBoxImage.Error);
-                else
-                    VoiceSettings.RemoveAt(index);
+            var confirmes = new ConfirmationMessage(voice.Name + " を削除してもよろしいですか？", "Bouyomisan", "CanRemove")
+            {
+                Button = MessageBoxButton.YesNo,
+                Image = MessageBoxImage.Warning
+            };
+            Messenger.Raise(confirmes);
+
+            if (confirmes.Response == true)
+            {
+                VoiceSettings.Remove(voice);
             }
         }
 
-        // 出力設定を追加します
         public void AddOutput()
         {
             OutputSettings.Add(new OutputSetting());
         }
 
-        // 出力設定を削除します
         public void RemoveOutput(OutputSetting output)
         {
-            if (MessageBoxResult.Yes == MessageBox.Show($"{output.Name} を削除してもよろしいですか？",
-                                                        "Bouyomisan",
-                                                        MessageBoxButton.YesNo,
-                                                        MessageBoxImage.Warning))
+            if (OutputSettings.IndexOf(output) == SelectedOutputIndex)
             {
-                int index = OutputSettings.IndexOf(output);
+                Messenger.Raise(
+                    new InformationMessage(
+                        "現在選択中の出力設定を削除することは出来ません",
+                        "Bouyomisan エラー",
+                        MessageBoxImage.Error,
+                        "CannotRemove"));
+                return;
+            }
 
-                if (SelectedOutputIndex == index)
-                    MessageBox.Show("現在選択中の出力設定を削除する事はできません", "Bouyomisan", MessageBoxButton.OK, MessageBoxImage.Error);
-                else
-                    OutputSettings.RemoveAt(index);
+            var confirmes = new ConfirmationMessage(output.Name + " を削除してもよろしいですか？", "Bouyomisan", "CanRemove")
+            {
+                Button = MessageBoxButton.YesNo,
+                Image = MessageBoxImage.Warning
+            };
+            Messenger.Raise(confirmes);
+
+            if (confirmes.Response == true)
+            {
+                OutputSettings.Remove(output);
             }
         }
 

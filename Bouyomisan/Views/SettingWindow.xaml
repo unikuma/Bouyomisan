@@ -22,6 +22,14 @@
         <i:EventTrigger EventName="Closed">
             <l:DataContextDisposeAction />
         </i:EventTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="CanRemove" Messenger="{Binding Messenger}">
+            <l:ConfirmationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="CannotRemove" Messenger="{Binding Messenger}">
+            <l:InformationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <TabControl TabStripPlacement="Left">
