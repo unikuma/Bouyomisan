@@ -3,13 +3,30 @@ using Livet;
 using Livet.EventListeners;
 using Livet.Messaging;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 
 namespace Bouyomisan.ViewModels
 {
     public class SettingWindowViewModel : ViewModel
     {
+        public SettingWindowViewModel()
+        {
+            foreach (var vtype in Enum.GetValues<VoiceType>())
+            {
+                string engnName =
+                    vtype.GetType().GetField(vtype.ToString())?.GetCustomAttribute<VoiceEngineAttribute>()?.EngineName ?? "null";
+
+                string description =
+                    vtype.GetType().GetField(vtype.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description ?? "null";
+
+                Types.Add($"{engnName} / {description}", vtype);
+            }
+        }
+
         public void Initialize()
         {
             CompositeDisposable.Add(
@@ -166,6 +183,8 @@ namespace Bouyomisan.ViewModels
             get => _engine.AppSetting.IsEnabledTxtOutput;
             set => _engine.AppSetting.IsEnabledTxtOutput = value;
         }
+
+        public Dictionary<string, VoiceType> Types { get; } = new();
 
         private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
     }

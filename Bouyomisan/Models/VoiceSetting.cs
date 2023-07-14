@@ -92,24 +92,6 @@ _name=標準再生
             set => RaisePropertyChangedIfSet(ref _ExoTemplate, value);
         }
 
-        public static Dictionary<string, VoiceType> Types { get; } = new Dictionary<string, VoiceType>();
-
-        static VoiceSetting()
-        {
-            foreach (var vtype in Enum.GetValues<VoiceType>())
-            {
-                // vtype(VoiceType構造体)からFieldInfoを取得し、
-                // GetCustomAttribute<T>関数でDescriptionAttributeのDescriptionプロパティを取得
-                var engineName = vtype.GetType().GetField(vtype.ToString())?.GetCustomAttribute<VoiceEngineAttribute>()?.EngineName ?? "null";
-                var description = vtype.GetType().GetField(vtype.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description ?? "null";
-                Types.Add((engineName + " / " + description) ?? string.Empty, vtype);
-            }
-        }
-
-        /// <summary>
-        /// 自身のプリセット文字列を返す
-        /// </summary>
-        /// <returns></returns>
         public override string ToString()
         {
             // プリセット名,棒読み,エンジン,声種,話速,音量,高さ,アクセント,声質,音程,メモ

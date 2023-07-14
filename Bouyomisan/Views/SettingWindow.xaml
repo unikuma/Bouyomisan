@@ -7,7 +7,6 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:vm="clr-namespace:Bouyomisan.ViewModels"
-    xmlns:m="clr-namespace:Bouyomisan.Models"
     Title="棒読みさん 設定"
     Width="525"
     Height="350"
@@ -120,7 +119,7 @@
                                     Grid.Row="1" />
 
                                 <ComboBox
-                                    ItemsSource="{x:Static m:VoiceSetting.Types}"
+                                    ItemsSource="{Binding DataContext.Types, RelativeSource={RelativeSource AncestorType=Window}}"
                                     SelectedValue="{Binding SelectedType}"
                                     DisplayMemberPath="Key"
                                     SelectedValuePath="Value"
