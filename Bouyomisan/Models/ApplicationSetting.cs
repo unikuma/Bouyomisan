@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using Livet;
 
@@ -10,12 +11,25 @@ namespace Bouyomisan.Models
     {
         public static ApplicationSetting? Deserialize()
         {
-            return (ApplicationSetting?)new XmlSerializer(typeof(ApplicationSetting)).Deserialize(File.OpenRead(SavePath));
+            using (var reader = XmlReader.Create(SavePath))
+            {
+                return (ApplicationSetting?)new XmlSerializer(typeof(ApplicationSetting)).Deserialize(reader);
+            }
         }
 
         public void Serialize()
         {
-            new XmlSerializer(typeof(ApplicationSetting)).Serialize(File.OpenWrite(SavePath), this);
+            var setting = new XmlWriterSettings()
+            {
+                Indent = true,
+                NewLineHandling = NewLineHandling.Replace,
+                NewLineChars = "\n"
+            };
+
+            using (var writer = XmlWriter.Create(SavePath, setting))
+            {
+                new XmlSerializer(typeof(ApplicationSetting)).Serialize(writer, this);
+            }
         }
 
         public static readonly string SavePath = Path.GetFullPath("./Settings.xml");

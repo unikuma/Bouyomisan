@@ -72,7 +72,7 @@ namespace Bouyomisan.Models
             {
                 if (disposing)
                 {
-                    _appSetting.Serialize();
+                    AppSetting.Serialize();
                 }
 
                 _disposed = true;
@@ -97,6 +97,11 @@ namespace Bouyomisan.Models
                 Voices = { new() { Name = "プログラムにより追加" } },
                 Outputs = { new() { Name = "プログラムにより追加" } }
             };
+
+            for (int i = 0; i < temp.Voices.Count; i++)
+            {
+                temp.Voices[i].ExoTemplate = temp.Voices[i].ExoTemplate.Replace("\n", "\r\n");
+            }
             _appSetting = temp;
         }
 
