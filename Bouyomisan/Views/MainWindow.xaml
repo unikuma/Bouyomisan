@@ -24,10 +24,6 @@
             <l:DataContextDisposeAction />
         </i:EventTrigger>
 
-        <l:InteractionMessageTrigger MessageKey="LoadingSettingFailed" Messenger="{Binding Messenger}">
-            <l:InformationDialogInteractionMessageAction />
-        </l:InteractionMessageTrigger>
-
         <l:InteractionMessageTrigger MessageKey="ShowSettingWindow" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction/>
         </l:InteractionMessageTrigger>
@@ -41,8 +37,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1.25*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -167,6 +163,7 @@
             ItemsSource="{Binding VoiceSettings}"
             SelectedIndex="{Binding SelectedVoiceIndex}"
             DisplayMemberPath="Name"
+            VerticalContentAlignment="Center"
             Grid.Row="6"
             Grid.ColumnSpan="2"/>
     
@@ -181,6 +178,7 @@
             ItemsSource="{Binding OutputSettings}"
             SelectedIndex="{Binding SelectedOutputIndex}"
             DisplayMemberPath="Name"
+            VerticalContentAlignment="Center"
             Grid.Row="7"
             Grid.Column="1"/>
     </Grid>
