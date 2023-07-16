@@ -127,10 +127,6 @@ namespace Bouyomisan.Models
                 temp.Outputs.Add(new() { Name = "プログラムにより追加" });
             }
 
-            for (int i = 0; i < temp.Voices.Count; i++)
-            {
-                temp.Voices[i].ExoTemplate = temp.Voices[i].ExoTemplate.Replace("\n", "\r\n");
-            }
             _appSetting = temp;
         }
 
