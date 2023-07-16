@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Extension.Serialization;
 using Livet;
 
 namespace Bouyomisan.Models
@@ -12,25 +13,12 @@ namespace Bouyomisan.Models
     {
         public static ApplicationSetting? Deserialize()
         {
-            using (var reader = XmlReader.Create(SavePath))
-            {
-                return (ApplicationSetting?)new XmlSerializer(typeof(ApplicationSetting)).Deserialize(reader);
-            }
+            return StaticXmlSerializer.Deserialize<ApplicationSetting>(SavePath);
         }
 
         public void Serialize()
         {
-            var setting = new XmlWriterSettings()
-            {
-                Indent = true,
-                NewLineHandling = NewLineHandling.Replace,
-                NewLineChars = "\n"
-            };
-
-            using (var writer = XmlWriter.Create(SavePath, setting))
-            {
-                new XmlSerializer(typeof(ApplicationSetting)).Serialize(writer, this);
-            }
+            StaticXmlSerializer.Serialize(SavePath, this);
         }
 
         public void WritePreset()
