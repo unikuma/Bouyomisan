@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Extension" Version="0.1.1" />
     <PackageReference Include="LivetCask" Version="4.0.2" />
     <PackageReference Include="NAudio.Core" Version="2.1.0" />
   </ItemGroup>
