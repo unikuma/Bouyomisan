@@ -86,6 +86,6 @@ namespace Bouyomisan.Models
         private ObservableCollection<WordPair> _words = new();
         private int _selectedVoiceIndex = 0;
         private int _selectedOutputIndex = 0;
-        private bool _isEnabledTxtOutput;
+        private bool _isEnabledTxtOutput = false;
     }
 }
