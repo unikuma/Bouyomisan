@@ -28,13 +28,11 @@ namespace Bouyomisan.Models
                 Directory.CreateDirectory(PresetDir);
             }
 
-            using (var stw = new StreamWriter(PresetDir + "AquesTalkPlayer.preset", append: false, Encoding.GetEncoding("shift_jis")))
+            using var stw = new StreamWriter(PresetDir + "AquesTalkPlayer.preset", append: false, Encoding.GetEncoding("shift_jis"));
+            stw.WriteLine("プリセット名,棒読み,エンジン,声種,話速,音量,高さ,アクセント,声質,音程,メモ");
+            foreach (var voice in Voices)
             {
-                stw.WriteLine("プリセット名,棒読み,エンジン,声種,話速,音量,高さ,アクセント,声質,音程,メモ");
-                foreach (var voice in Voices)
-                {
-                    stw.WriteLine(voice.ToString());
-                }
+                stw.WriteLine(voice.ToString());
             }
         }
 
