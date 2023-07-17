@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using Livet;
+using NAudio.Wave;
 
 namespace Bouyomisan.Models
 {
@@ -16,10 +19,30 @@ namespace Bouyomisan.Models
                 $"/P \"{AppSetting.Voices[AppSetting.SelectedVoiceIndex].Name}\"");
         }
 
-        public void CreateFile()
+        public async Task CreateFileAsync()
         {
             AppSetting.WritePreset();
+            VoiceSetting voice = AppSetting.Voices[AppSetting.SelectedVoiceIndex];
+            OutputSetting output = AppSetting.Outputs[AppSetting.SelectedOutputIndex];
 
+            string audioOut = Path.GetFullPath(output.AudioOut);
+            if (!Directory.Exists(audioOut))
+            {
+                Directory.CreateDirectory(audioOut);
+            }
+
+            WaveData wave = await CreateWaveAsync(CreateWavePath(voice, audioOut));
+            if (ShouldOutputWavOnly)
+            {
+                LastGeneratedFile = wave.WavePath;
+                return;
+            }
+
+            if (AppSetting.IsEnabledTxtOutput)
+            {
+                CreateText(wave);
+            }
+            LastGeneratedFile = CreateExo(wave, voice, output);
         }
 
         public void Dispose()
@@ -130,12 +153,70 @@ namespace Bouyomisan.Models
             _appSetting = temp;
         }
 
-        private void ThrowIfPronunciationIsNullOrWhitespace()
+        private string CreateWavePath(VoiceSetting voice, string audioOut)
         {
-            if (string.IsNullOrWhiteSpace(Pronunciation))
+            var now = DateTime.Now;
+            return Path.Combine(audioOut, $"{now:yyyyMMdd}_{now:HHmmss}_{voice.Name}.wav");
+        }
+
+        private async Task<WaveData> CreateWaveAsync(string wavePath)
+        {
+            Process.Start(
+                AquesTalkPath,
+                $"/T {Pronunciation.Replace("\r\n", string.Empty)} " +
+                $"/P {AppSetting.Voices[AppSetting.SelectedVoiceIndex].Name} " +
+                $"/W {wavePath}");
+
+            FileStream? fs = null;
+            for (int i = 0; i < 256; i++)
             {
-                throw new Exception("読み上げる文字列がありません");
+                await Task.Delay(50);
+                try
+                {
+                    fs = new(wavePath, FileMode.Open);
+                    Debug.WriteLine(i);
+                    break;
+                }
+                catch { }
             }
+
+            if (fs == null)
+            {
+                throw new TimeoutException($"{wavePath} が見つかりませんでした。");
+            }
+
+            WaveFileReader wfr = new(fs);
+            double waveTime = wfr.TotalTime.TotalMilliseconds;
+            wfr.Dispose();
+            fs.Dispose();
+
+            return new(wavePath, waveTime);
+        }
+
+        private string CreateExo(WaveData wave, VoiceSetting voice, OutputSetting output)
+        {
+            string rowSubtitles =
+                BitConverter.ToString(Encoding.Unicode.GetBytes(Subtitles)).Replace("-", string.Empty).ToLower().PadRight(4096, '0');
+            int endFrame = (int)(Math.Floor((wave.WaveTime + voice.CorrectionMillisecond) / 100d) / 10 * output.AviUtlFps);
+
+            if (endFrame < 1)
+            {
+                endFrame = 1;
+            }
+
+            string exoPath = Path.ChangeExtension(wave.WavePath, ".exo");
+            File.WriteAllText(
+                exoPath,
+                string.Format(voice.ExoTemplate, rowSubtitles, wave.WavePath, endFrame),
+                Encoding.GetEncoding("shift_jis"));
+
+            return exoPath;
+        }
+
+        private void CreateText(WaveData wave)
+        {
+            string textPath = Path.ChangeExtension(wave.WavePath, ".txt");
+            File.WriteAllText(textPath, Subtitles, Encoding.GetEncoding("shift_jis"));
         }
 
         private static readonly BouyomisanEngine _instance = new();
@@ -146,5 +227,17 @@ namespace Bouyomisan.Models
         private bool _shouldCopySubtitles = true;
         private bool _shouldOutputWavOnly = false;
         private string _lastGeneratedFile = string.Empty;
+
+        private class WaveData
+        {
+            public WaveData(string path, double time)
+            {
+                WavePath = path;
+                WaveTime = time;
+            }
+
+            public string WavePath { get; init; }
+            public double WaveTime { get; init; }
+        }
     }
 }

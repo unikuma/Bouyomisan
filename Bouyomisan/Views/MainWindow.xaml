@@ -5,6 +5,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:vm="clr-namespace:Bouyomisan.ViewModels"
+    xmlns:messaging="clr-namespace:Bouyomisan.Messaging"
     Title="{Binding Title}"
     Width="300"
     Height="425"
@@ -30,6 +31,10 @@
 
         <l:InteractionMessageTrigger MessageKey="BEngineError" Messenger="{Binding Messenger}">
             <l:InformationDialogInteractionMessageAction />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="DragStart" Messenger="{Binding Messenger}">
+            <messaging:FileDragStartMessageAction />
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 

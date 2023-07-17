@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
+using Bouyomisan.Messaging;
 using Bouyomisan.Models;
 using Livet;
 using Livet.EventListeners;
@@ -38,7 +36,7 @@ namespace Bouyomisan.ViewModels
                             break;
 
                         case nameof(_engine.LastGeneratedFile):
-                            Messenger.Raise(new());
+                            Messenger.Raise(new FileDragStartMessage(_engine.LastGeneratedFile, "DragStart"));
                             break;
                     }
                 }));
@@ -107,45 +105,39 @@ namespace Bouyomisan.ViewModels
 
         public async void CreateExoFile(DependencyObject dragSource)
         {
-            if (string.IsNullOrWhiteSpace(Pronunciation))
+            if (!File.Exists(BouyomisanEngine.AquesTalkPath))
             {
-                MessageBox.Show("読み上げる文字列が無い為、音声ファイルを作成できません",
-                                "Bouyomisan",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
+                Messenger.Raise(
+                    new InformationMessage(
+                        "指定の場所にAquesTalkPlayer.exeが存在しない為、音声の生成が出来ません",
+                        "Bouyomisan エラー",
+                        MessageBoxImage.Error,
+                        "BEngineError"));
                 return;
             }
-            if (!File.Exists(NewVoiceCreator.AquesTalkPlayerPath))
+            if (string.IsNullOrWhiteSpace(Pronunciation))
             {
-                MessageBox.Show($"指定の場所にAquesTalkPlayer.exeが存在しない為、音声ファイルを作成できません",
-                                "Bouyomisan",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                Messenger.Raise(
+                    new InformationMessage(
+                        "読み上げる文字列が無いため生成できません",
+                        "Bouyomisan エラー",
+                        MessageBoxImage.Error,
+                        "BEngineError"));
                 return;
             }
 
             try
             {
-                if (!Directory.Exists(Path.GetFullPath(OutputSettings[SelectedOutputIndex].AudioOut)))
-                    Directory.CreateDirectory(Path.GetFullPath(OutputSettings[SelectedOutputIndex].AudioOut));
-
-                // 声設定を基に.presetファイルを作成する
-                PresetCreator.Create(VoiceSettings);
-
-                // 現在の設定を基に音声ファイルとExoファイルを作成する
-                nvc.SubtitleText = Subtitles;
-                nvc.VoiceText = Pronunciation;
-                nvc.SelectedVoice = VoiceSettings[SelectedVoiceIndex];
-                nvc.SelectedOutput = OutputSettings[SelectedOutputIndex];
-                string wavPath = await nvc.CreateWavAsync();
-
-                DragDrop.DoDragDrop(dragSource,
-                                    new DataObject(DataFormats.FileDrop, new string[] { ShouldOutputWavOnly ? wavPath : nvc.CreateExo() }),
-                                    DragDropEffects.Copy);
+                await _engine.CreateFileAsync();
             }
             catch (TimeoutException e)
             {
-                MessageBox.Show(e.Message, "Bouyomisan", MessageBoxButton.OK, MessageBoxImage.Error);
+                Messenger.Raise(
+                    new InformationMessage(
+                        e.Message,
+                        "Bouyomisan タイムアウト",
+                        MessageBoxImage.Error,
+                        "BEngineError"));
             }
         }
 
@@ -218,6 +210,5 @@ namespace Bouyomisan.ViewModels
 
         private bool _disposed = false;
         private readonly BouyomisanEngine _engine = BouyomisanEngine.Instance;
-        private readonly NewVoiceCreator nvc = new();
     }
 }
