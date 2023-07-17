@@ -153,17 +153,13 @@
         </Button>
 
         <Button
-            Name="dragButton"
             Content="この領域をAviUtlにD&amp;D"
             Grid.Row="5"
             Grid.Column="1">
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <l:LivetCallMethodAction
-                        MethodName="CreateExoFile"
-                        MethodParameter="{Binding ElementName=dragButton}"
-                        MethodTarget="{Binding}"/>
+                    <l:LivetCallMethodAction MethodName="CreateFile" MethodTarget="{Binding}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>

@@ -103,7 +103,7 @@ namespace Bouyomisan.ViewModels
             _engine.PlayPronunciation();
         }
 
-        public async void CreateExoFile(DependencyObject dragSource)
+        public async void CreateFile()
         {
             if (!File.Exists(BouyomisanEngine.AquesTalkPath))
             {
