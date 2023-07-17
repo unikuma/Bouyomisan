@@ -78,35 +78,35 @@
                     </i:Interaction.Triggers>
                 </MenuItem>
             </MenuItem>
-    
+
             <MenuItem Header="ウィンドウ(_W)">
                 <MenuItem x:Name="menuTopmost" Header="ウィンドウをピン留め" IsCheckable="True" />
-    
+
                 <MenuItem Header="再生ボタンを非表示" IsCheckable="True">
                 </MenuItem>
             </MenuItem>
         </Menu>
-    
+
         <TextBlock
             Text="字幕"
             VerticalAlignment="Center"
             Margin="4,2"
             Grid.Row="1"
             Grid.ColumnSpan="2"/>
-    
+
         <TextBox
             Text="{Binding Subtitles, UpdateSourceTrigger=PropertyChanged}"
             AcceptsReturn="True"
             VerticalScrollBarVisibility="Auto"
             Grid.Row="2"
             Grid.ColumnSpan="2"/>
-    
+
         <TextBlock
             Text="読み方"
             VerticalAlignment="Center"
             Margin="4,2"
             Grid.Row="3">
-    
+
             <TextBlock.ToolTip>
                 <TextBlock>
                     <Run Text="ゆっくりが読み上げるテキストです。また、#>を行頭に付けることで音声記号列として読み上げる事が出来ます"/><LineBreak/>
@@ -115,7 +115,7 @@
                 </TextBlock>
             </TextBlock.ToolTip>
         </TextBlock>
-    
+
         <CheckBox
             Content="字幕をコピー"
             IsChecked="{Binding ShouldCopySubtitles}"
@@ -124,26 +124,26 @@
             Margin="4,2"
             Grid.Row="3"
             Grid.Column="1">
-    
+
             <CheckBox.ToolTip>
                 <TextBlock Text="この項目が有効の場合、常に字幕のテキストを読み方にコピーします"/>
             </CheckBox.ToolTip>
         </CheckBox>
-    
+
         <TextBox
             Text="{Binding Pronunciation, UpdateSourceTrigger=PropertyChanged}"
             AcceptsReturn="True"
             VerticalScrollBarVisibility="Auto"
             Grid.Row="4"
             Grid.ColumnSpan="2">
-    
+
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
                     <l:LivetCallMethodAction MethodName="DisableCopy" MethodTarget="{Binding}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
-    
+
         <Button Content="音声の再生" Grid.Row="5">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
@@ -151,13 +151,13 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-    
+
         <Button
             Name="dragButton"
             Content="この領域をAviUtlにD&amp;D"
             Grid.Row="5"
             Grid.Column="1">
-    
+
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                     <l:LivetCallMethodAction
@@ -167,7 +167,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
-    
+
         <ComboBox
             ItemsSource="{Binding VoiceSettings}"
             SelectedIndex="{Binding SelectedVoiceIndex}"
@@ -175,14 +175,14 @@
             VerticalContentAlignment="Center"
             Grid.Row="6"
             Grid.ColumnSpan="2"/>
-    
+
         <CheckBox
             Content="Wavのみ出力"
             IsChecked="{Binding ShouldOutputWavOnly}"
             VerticalAlignment="Center"
             Margin="4,0"
             Grid.Row="7"/>
-    
+
         <ComboBox
             ItemsSource="{Binding OutputSettings}"
             SelectedIndex="{Binding SelectedOutputIndex}"

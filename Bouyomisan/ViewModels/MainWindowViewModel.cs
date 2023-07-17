@@ -193,7 +193,6 @@ namespace Bouyomisan.ViewModels
             set => _engine.ShouldOutputWavOnly = value;
         }
 
-        // ウィンドウが閉じた
         protected override void Dispose(bool disposing)
         {
             if (!_disposed)
