@@ -79,11 +79,18 @@ namespace Bouyomisan.Models
             set => RaisePropertyChangedIfSet(ref _isEnabledTxtOutput, value);
         }
 
+        public bool ShouldHidePlayButton
+        {
+            get => _shouldHidePlayButton;
+            set => RaisePropertyChangedIfSet(ref _shouldHidePlayButton, value);
+        }
+
         private ObservableCollection<VoiceSetting> _voices = new();
         private ObservableCollection<OutputSetting> _outputs = new();
         private ObservableCollection<WordPair> _words = new();
         private int _selectedVoiceIndex = 0;
         private int _selectedOutputIndex = 0;
         private bool _isEnabledTxtOutput = false;
+        private bool _shouldHidePlayButton = false;
     }
 }

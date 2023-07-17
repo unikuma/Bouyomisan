@@ -81,9 +81,7 @@
 
             <MenuItem Header="ウィンドウ(_W)">
                 <MenuItem x:Name="menuTopmost" Header="ウィンドウをピン留め" IsCheckable="True" />
-
-                <MenuItem Header="再生ボタンを非表示" IsCheckable="True">
-                </MenuItem>
+                <MenuItem Header="再生ボタンを非表示" IsCheckable="True" IsChecked="{Binding ShouldHidePlayButton}" />
             </MenuItem>
         </Menu>
 
@@ -145,6 +143,16 @@
         </TextBox>
 
         <Button Content="音声の再生" Grid.Row="5">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ShouldHidePlayButton}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
                     <l:LivetCallMethodAction MethodName="PlayPronunciation" MethodTarget="{Binding}"/>
@@ -152,10 +160,18 @@
             </i:Interaction.Triggers>
         </Button>
 
-        <Button
-            Content="この領域をAviUtlにD&amp;D"
-            Grid.Row="5"
-            Grid.Column="1">
+        <Button Content="この領域をAviUtlにD&amp;D" Grid.Row="5">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Grid.Column" Value="1" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ShouldHidePlayButton}" Value="True">
+                            <Setter Property="Grid.Column" Value="0" />
+                            <Setter Property="Grid.ColumnSpan" Value="2" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">

@@ -61,6 +61,10 @@ namespace Bouyomisan.ViewModels
                         case nameof(_engine.AppSetting.SelectedOutputIndex):
                             RaisePropertyChanged(nameof(SelectedOutputIndex));
                             break;
+
+                        case nameof(_engine.AppSetting.ShouldHidePlayButton):
+                            RaisePropertyChanged(nameof(ShouldHidePlayButton));
+                            break;
                     }
                 }));
         }
@@ -191,6 +195,12 @@ namespace Bouyomisan.ViewModels
         {
             get => _engine.ShouldOutputWavOnly;
             set => _engine.ShouldOutputWavOnly = value;
+        }
+
+        public bool ShouldHidePlayButton
+        {
+            get => _engine.AppSetting.ShouldHidePlayButton;
+            set => _engine.AppSetting.ShouldHidePlayButton = value;
         }
 
         protected override void Dispose(bool disposing)

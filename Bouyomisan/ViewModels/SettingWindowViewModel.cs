@@ -49,6 +49,10 @@ namespace Bouyomisan.ViewModels
                         case nameof(_engine.AppSetting.SelectedOutputIndex):
                             RaisePropertyChanged(nameof(SelectedOutputIndex));
                             break;
+
+                        case nameof(_engine.AppSetting.IsEnabledTxtOutput):
+                            RaisePropertyChanged(nameof(IsEnabledTxtOutput));
+                            break;
                     }
                 }));
         }
