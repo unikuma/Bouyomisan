@@ -42,6 +42,10 @@ namespace Bouyomisan.ViewModels
                             RaisePropertyChanged(nameof(OutputSettings));
                             break;
 
+                        case nameof(_engine.AppSetting.Words):
+                            RaisePropertyChanged(nameof(WordDictionary));
+                            break;
+
                         case nameof(_engine.AppSetting.SelectedVoiceIndex):
                             RaisePropertyChanged(nameof(SelectedVoiceIndex));
                             break;
@@ -126,7 +130,7 @@ namespace Bouyomisan.ViewModels
             {
                 // 配列を入れ替えるとDataGridの選択が解除されてしまう為、現在のインデックスを予め記録しておく
                 int n = SelectedWordPair;
-
+            
                 (WordDictionary[SelectedWordPair], WordDictionary[SelectedWordPair - 1]) = (WordDictionary[SelectedWordPair - 1], WordDictionary[SelectedWordPair]);
                 SelectedWordPair = --n;
             }
