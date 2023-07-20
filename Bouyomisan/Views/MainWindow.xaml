@@ -26,7 +26,7 @@
         </i:EventTrigger>
 
         <l:InteractionMessageTrigger MessageKey="ShowSettingWindow" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction/>
+            <l:TransitionInteractionMessageAction />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="BEngineError" Messenger="{Binding Messenger}">
@@ -40,18 +40,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1.25*"/>
-            <RowDefinition Height="0.3*"/>
-            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1.25*" />
+            <RowDefinition Height="0.3*" />
+            <RowDefinition Height="0.3*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
     
         <Menu Grid.ColumnSpan="2">
@@ -90,14 +90,14 @@
             VerticalAlignment="Center"
             Margin="4,2"
             Grid.Row="1"
-            Grid.ColumnSpan="2"/>
+            Grid.ColumnSpan="2" />
 
         <TextBox
             Text="{Binding Subtitles, UpdateSourceTrigger=PropertyChanged}"
             AcceptsReturn="True"
             VerticalScrollBarVisibility="Auto"
             Grid.Row="2"
-            Grid.ColumnSpan="2"/>
+            Grid.ColumnSpan="2" />
 
         <TextBlock
             Text="読み方"
@@ -107,8 +107,8 @@
 
             <TextBlock.ToolTip>
                 <TextBlock>
-                    <Run Text="ゆっくりが読み上げるテキストです。また、#>を行頭に付けることで音声記号列として読み上げる事が出来ます"/><LineBreak/>
-                    <Run Text="(選択中の声設定の棒読み化が有効になっていると音声記号列として読み上げません)"/><LineBreak/>
+                    <Run Text="ゆっくりが読み上げるテキストです。また、#>を行頭に付けることで音声記号列として読み上げる事が出来ます" /><LineBreak />
+                    <Run Text="(選択中の声設定の棒読み化が有効になっていると音声記号列として読み上げません)" /><LineBreak />
                     <Run Text="例 : 「#>これわ、おんせーき'ごーです。」"/>
                 </TextBlock>
             </TextBlock.ToolTip>
@@ -124,7 +124,7 @@
             Grid.Column="1">
 
             <CheckBox.ToolTip>
-                <TextBlock Text="この項目が有効の場合、常に字幕のテキストを読み方にコピーします"/>
+                <TextBlock Text="この項目が有効の場合、常に字幕のテキストを読み方にコピーします" />
             </CheckBox.ToolTip>
         </CheckBox>
 
@@ -137,7 +137,7 @@
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
-                    <l:LivetCallMethodAction MethodName="DisableCopy" MethodTarget="{Binding}"/>
+                    <l:LivetCallMethodAction MethodName="DisableCopy" MethodTarget="{Binding}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </TextBox>
@@ -155,7 +155,7 @@
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Click">
-                    <l:LivetCallMethodAction MethodName="PlayPronunciation" MethodTarget="{Binding}"/>
+                    <l:LivetCallMethodAction MethodName="PlayPronunciation" MethodTarget="{Binding}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
@@ -175,7 +175,7 @@
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <l:LivetCallMethodAction MethodName="CreateFile" MethodTarget="{Binding}"/>
+                    <l:LivetCallMethodAction MethodName="CreateFile" MethodTarget="{Binding}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Button>
@@ -186,14 +186,14 @@
             DisplayMemberPath="Name"
             VerticalContentAlignment="Center"
             Grid.Row="6"
-            Grid.ColumnSpan="2"/>
+            Grid.ColumnSpan="2" />
 
         <CheckBox
             Content="Wavのみ出力"
             IsChecked="{Binding ShouldOutputWavOnly}"
             VerticalAlignment="Center"
             Margin="4,0"
-            Grid.Row="7"/>
+            Grid.Row="7" />
 
         <ComboBox
             ItemsSource="{Binding OutputSettings}"
@@ -201,6 +201,6 @@
             DisplayMemberPath="Name"
             VerticalContentAlignment="Center"
             Grid.Row="7"
-            Grid.Column="1"/>
+            Grid.Column="1" />
     </Grid>
 </Window>
